@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 
 public class HttpItemActivity extends Activity {
 	private static final String TAG = "HttpItemActivity";
+	
+	String address_replace = "http://clien.career.co.kr/cs2/";
 	
 	ListView httpItemListView;
 	ProgressDialog mDialog;
@@ -73,11 +76,8 @@ public class HttpItemActivity extends Activity {
 	 				Uri uri = Uri.parse(uridata);
 	 				Intent intent  = new Intent(Intent.ACTION_VIEW,uri);
 	 				startActivity(intent);
-	 				
   				}
-				
 			}
-        	
         });
        
         /*
@@ -90,10 +90,9 @@ public class HttpItemActivity extends Activity {
 			e.printStackTrace();
 		}
 		*/
-        
-        //setProgressDlg();
-		
-		//new parseHtml().execute();
+        //thread
+        setProgressDlg();
+		new parseHtml().execute();
         
         aa = new HttpItemAdapter(this,R.layout.row,HttpItemArray);
 		        
@@ -117,60 +116,79 @@ public class HttpItemActivity extends Activity {
     }
     
     
-    private int buildTagList() throws MalformedURLException,IOException {
+    @SuppressWarnings("null")
+	private int buildTagList() throws MalformedURLException,IOException {
 		
 		String href=null,label=null;
 		String title = null,link = null,author = null;
+		String strDate = null;
 		Date date = null;
 		int result=0;
 		Log.d(TAG,"buildTagList");
 		Source source = new Source(new URL(intent_link));
+		String temp[]= new String[6];
 
 		source.fullSequentialParse();
 		
-		List trtags = source.getAllElements(HTMLElementName.TR);
+		List<Element> tbodytags = source.getAllElements(HTMLElementName.TBODY);
 		
-		for(int i=0; i < trtags.size(); i++)
-		{
+		for (int i = 0; i < tbodytags.size(); i++) {
+
+			Element trElement = (Element) tbodytags.get(i);
+			List<Element> trList = trElement.getAllElements(HTMLElementName.TR);
+
+			Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
 			
-		     Element trElement = (Element) trtags.get(i);
-		     List tdList = trElement.getAllElements(HTMLElementName.TD);
-		     //List aList = trElement.getAllElements(HTMLElementName.A);
-		     //List spanList = trElement.getAllElements(HTMLElementName.SPAN);
-		     
-		     //Log.d(TAG,"TR SIZE : "+trtags.size()+", TD : "+tdList.size()+", A : "+aList.size()+", Span : "+spanList.size());
-		     Log.d(TAG,"TR SIZE : "+trtags.size()+", TD : "+tdList.size());
-		/*     
-		     //Title
-		     Element e_title = (Element)tdList.get(1);
-		     title = e_title.getTextExtractor().toString();
-		     
-		     //Link
-		     Element e_link = (Element)aList.get(0);
-		     link = e_link.getAttributeValue("href");
-		     
-		     //Author 
-		     Element e_author = (Element)tdList.get(2);
-		     //author = e_author.getAttributeValue("title");
-		     author = e_author.getContent().getChildElements().toString();
-		     
-		     //Date
-		     Element e_date = (Element)spanList.get(1);
-		     String sdate = e_date.getAttributeValue("title");
-		     
-		     Log.d(TAG,i+" Title : "+title);
-		     Log.d(TAG,i+" Link : "+link);
-		     Log.d(TAG,i+" Author : "+author);
-		     Log.d(TAG,i+" Date : "+sdate);
-		    
-		     if(href!=null && label!=null && href!="")
-		     {
-		      
-		      HttpItem h = new HttpItem(title,link,date,author);
-		      addHttpItemToArray(h);
-		     }
-		     */ 
-		     result = 1;
+			for(int x = 0; x < trList.size(); x++)
+			{
+				Element tdElement = (Element) trList.get(x);
+				List<Element> tdList = tdElement.getAllElements(HTMLElementName.TD);
+				
+				for(int y=0; y < tdList.size();y++)
+				{
+					Element e_title = (Element) tdList.get(y);
+					temp[y] = e_title.getTextExtractor().toString();
+					Log.d(TAG, x+" : "+y + " temp string : " + temp[y]);
+				}
+				
+				title = temp[1] + temp[2];
+				
+				if(tdList.size() == 5)
+				{
+					author = temp[2];
+				}
+				else
+				{
+					author = temp[3];
+				}
+				
+				
+				List<Element> aList = tdElement.getAllElements(HTMLElementName.A);
+		
+				for(int z=0; z < aList.size();z++)
+				{
+					Element e_link = (Element) aList.get(z);
+					link = e_link.getAttributeValue("href");
+					Log.d(TAG,x+" : "+z + " Link string : " + link);
+				}
+				link = link.replace("../", "");
+				link = address_replace + link;
+				
+				for(int z=0; z < tdList.size();z++)
+				{
+					Element e_date = (Element) tdList.get(z);
+					strDate = e_date.getAttributeValue("title");
+					Log.d(TAG,x+" : "+z + " date string : " + strDate);
+				}
+
+				if (trList != null) {
+
+					HttpItem h = new HttpItem(title, link, date, author);
+					addHttpItemToArray(h);
+				}
+			}
+			
+			result = 1;
 		}
 		
 		return result;
@@ -183,25 +201,16 @@ public class HttpItemActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			Toast.makeText(HttpItemActivity.this, "작업을 시작합니다.", Toast.LENGTH_SHORT);
+			//Toast.makeText(HttpItemActivity.this, "작업을 시작합니다.", Toast.LENGTH_SHORT).show();
 			mDialog.show();
 		}
 
 		@Override
 		protected Integer doInBackground(Void... arg0) {
-			/*
-			for(int i=0; i<mDialog.getMax(); i++)
-			{
-				try
-				{
-					Thread.sleep(500);
-				}catch(Exception ex){}
-				this.publishProgress(i);
-			}
-			*/
+
 			int result = 0;
 			Log.d(TAG,"doInBackground");
-			while(result > 0)
+			while(result == 0)
 			{
 				try {
 					result = buildTagList();
@@ -217,14 +226,15 @@ public class HttpItemActivity extends Activity {
     	
      	@Override
     	protected void onProgressUpdate(Integer... progress) {
-     		super.onProgressUpdate(progress);
+     		//super.onProgressUpdate(progress);
     	}
   
     	@Override
     	protected void onPostExecute(Integer result) {
     		super.onPostExecute(result);
-			Toast.makeText(HttpItemActivity.this, "작업이 끝났습니다.", Toast.LENGTH_SHORT);
+			//Toast.makeText(HttpItemActivity.this, "작업이 끝났습니다.", Toast.LENGTH_SHORT).show();
 			mDialog.dismiss(); 
+			httpItemListView.setAdapter(aa);
     	}
   
     	@Override

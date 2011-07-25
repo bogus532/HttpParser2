@@ -32,7 +32,7 @@ public class ArticleItemAdapter extends ArrayAdapter<ArticleItem> {
             if (b != null) {
 	            	TextView tvArticle = (TextView) v.findViewById(R.id.tvArticle);
 	                                    
-	            	tvArticle.setTextSize(25);
+	            	tvArticle.setTextSize(30);
 	            	tvArticle.setText(this.getItem(position).toString());
 	            	tvArticle.setAutoLinkMask(Linkify.WEB_URLS);
 	            	tvArticle.setLinksClickable(true);

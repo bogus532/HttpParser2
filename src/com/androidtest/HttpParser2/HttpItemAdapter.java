@@ -34,7 +34,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
 	                TextView tvDate = (TextView) v.findViewById(R.id.tvDate);
 	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor);
                     
-	                tvContents.setTextSize(20);
+	                tvContents.setTextSize(15);
                     tvContents.setText(this.getItem(position).toString());
                     tvContents.setAutoLinkMask(Linkify.WEB_URLS);
                     tvContents.setLinksClickable(true);

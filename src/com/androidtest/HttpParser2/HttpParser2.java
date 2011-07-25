@@ -103,7 +103,6 @@ public class HttpParser2 extends Activity {
     
     private void buildPostTagList() throws MalformedURLException,IOException {
 		
-		String href=null,label=null;
 		String title = null,link = null;
 		
 		Source source = new Source(new URL(address));
@@ -111,20 +110,16 @@ public class HttpParser2 extends Activity {
 		source.fullSequentialParse();
 		
 		List trtags = source.getAllElements(HTMLElementName.UL);
-		for(int i=0; i < trtags.size(); i++)
-		{
-			 
-		     Element trElement = (Element) trtags.get(i);
-		     List liList = trElement.getAllElements(HTMLElementName.LI);
-		     List aList = trElement.getAllElements(HTMLElementName.A);
-		     List spanList = trElement.getAllElements(HTMLElementName.SPAN);
-		     
-		     Log.d(TAG,i+"li : "+liList.size()+" A : "+aList.size()+" Span : "+spanList.size());
-		     
-		     //Title
-		     
-		     //Element e_title = (Element)liList.get(3);
-		     //title = e_title.getTextExtractor().toString(); 
+		for (int i = 0; i < trtags.size(); i++) {
+
+			Element trElement = (Element) trtags.get(i);
+			List liList = trElement.getAllElements(HTMLElementName.LI);
+			List aList = trElement.getAllElements(HTMLElementName.A);
+			List spanList = trElement.getAllElements(HTMLElementName.SPAN);
+
+			Log.d(TAG, i + "li : " + liList.size() + " A : " + aList.size()
+					+ " Span : " + spanList.size());
+
 			if (i == 3 || i == 4) {
 				for (int x = 0; x < liList.size(); x++) {
 					try {
@@ -132,24 +127,24 @@ public class HttpParser2 extends Activity {
 						title = e_title.getTextExtractor().toString();
 						Element e_link = (Element) aList.get(x);
 						link = e_link.getAttributeValue("href");
-						
-						link = link.replace("../","");
-						link = address_replace + link;
-												
-						Log.d(TAG, i + " Title : " + title);
-						Log.d(TAG, i + " Link : " + link);
 
-						ArticleItem h = new ArticleItem(title, link);
-						addArticleItemToArray(h);
+						if (!title.equals("클리앙대화방")) {
+							link = link.replace("../", "");
+							link = address_replace + link;
+
+							Log.d(TAG, i + " Title : " + title);
+							Log.d(TAG, i + " Link : " + link);
+
+							ArticleItem h = new ArticleItem(title, link);
+							addArticleItemToArray(h);
+						}
 					} catch (Exception e) {
 						// Log.e(TAG,e.getMessage());
 					}
 				}
 			}
-		     		     
-		     
+
 		}
-		
 
 	}
     

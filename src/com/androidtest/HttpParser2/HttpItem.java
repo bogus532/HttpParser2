@@ -40,8 +40,12 @@ public class HttpItem {
 	
 	public String getDateToString()
 	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String dateString = sdf.format(date);
+		String dateString = null;
+		if(date != null)
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			dateString = sdf.format(date);
+		}
         return dateString;
 	}
 	
