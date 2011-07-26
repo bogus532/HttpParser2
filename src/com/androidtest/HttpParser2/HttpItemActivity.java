@@ -3,8 +3,11 @@ package com.androidtest.HttpParser2;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -116,7 +119,6 @@ public class HttpItemActivity extends Activity {
     }
     
     
-    @SuppressWarnings("null")
 	private int buildTagList() throws MalformedURLException,IOException {
 		
 		String href=null,label=null;
@@ -143,6 +145,7 @@ public class HttpItemActivity extends Activity {
 			{
 				Element tdElement = (Element) trList.get(x);
 				List<Element> tdList = tdElement.getAllElements(HTMLElementName.TD);
+				
 				
 				for(int y=0; y < tdList.size();y++)
 				{
@@ -171,14 +174,37 @@ public class HttpItemActivity extends Activity {
 					link = e_link.getAttributeValue("href");
 					Log.d(TAG,x+" : "+z + " Link string : " + link);
 				}
-				link = link.replace("../", "");
-				link = address_replace + link;
+				
+				if(link != null)
+				{
+					link = link.replace("../", "");
+					link = address_replace + link;
+				}
+				
+				//tdList.toString().replaceAll("<td><span", "<td");
 				
 				for(int z=0; z < tdList.size();z++)
 				{
 					Element e_date = (Element) tdList.get(z);
-					strDate = e_date.getAttributeValue("title");
+					//strDate = e_date.getAttributeValue("title");
+					strDate = e_date.toString();
+					strDate = strDate.replaceAll("<td><span title=\"","");
+					strDate = strDate.replaceAll("</a></td>","");
+					strDate = strDate.replaceAll("\">[0-9]*-[0-9]*","");
+					strDate = strDate.replaceAll("\">[0-9]*:[0-9]*","");
+					
+					if(!strDate.contains("<td"))
+					{
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	                    date = new GregorianCalendar(0,0,0).getTime();
+	                    try {
+	                        date = sdf.parse(strDate);
+	                    } catch (ParseException e) {
+	                        e.printStackTrace();
+	                    }
+					}
 					Log.d(TAG,x+" : "+z + " date string : " + strDate);
+	
 				}
 
 				if (trList != null) {
