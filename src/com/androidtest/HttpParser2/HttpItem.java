@@ -9,13 +9,15 @@ public class HttpItem {
 	private String link;
 	private String author;
 	private Date date;
+	private String giflink;
 		
-	public HttpItem(String _title,String _link,Date _date,String _author)
+	public HttpItem(String _title,String _link,Date _date,String _author,String _giflink)
 	{
 		title = _title;
 		link = _link;
 		author = _author;
 		date = _date;
+		giflink = _giflink;
 	}
 	
 	public String getTitle()
@@ -36,6 +38,11 @@ public class HttpItem {
 	public Date getDate()
 	{
 		return date;
+	}
+	
+	public String getGiflink()
+	{
+		return giflink;
 	}
 	
 	public String getDateToString()

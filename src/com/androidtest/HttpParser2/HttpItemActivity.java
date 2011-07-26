@@ -93,7 +93,7 @@ public class HttpItemActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		*/
+		//*/
         //Thread
         setProgressDlg();
 		new parseHtml().execute();
@@ -122,9 +122,8 @@ public class HttpItemActivity extends Activity {
     
 	private int buildTagList() throws MalformedURLException,IOException {
 		
-		String href=null,label=null;
 		String title = null,link = null,author = null;
-		String strDate = null;
+		String strDate = null,strImg = null,strReturnURL = null;
 		Date date = null;
 		int result=0;
 		Log.d(TAG,"buildTagList");
@@ -186,7 +185,6 @@ public class HttpItemActivity extends Activity {
 				for(int z=0; z < tdList.size();z++)
 				{
 					Element e_date = (Element) tdList.get(z);
-					//strDate = e_date.getAttributeValue("title");
 					strDate = e_date.toString();
 					strDate = strDate.replaceAll("<td><span title=\"","");
 					strDate = strDate.replaceAll("</a></td>","");
@@ -203,13 +201,34 @@ public class HttpItemActivity extends Activity {
 	                        e.printStackTrace();
 	                    }
 					}
+					
 					Log.d(TAG,x+" : "+z + " date string : " + strDate);
-	
+				}
+				
+				strReturnURL = null;
+				
+				for(int z=0; z < tdList.size();z++)
+				{
+					Element e_img = (Element) tdList.get(z);
+					strImg = e_img.toString();
+					
+					if(strImg.contains("<img"))
+					{
+						strImg = e_img.toString();
+						strImg = strImg.replaceAll("<td class=\"post_name\"><img src='","");
+						strImg = strImg.replaceAll("></a></td>","");
+						strImg = strImg.replaceAll("></td>","");
+						strImg = strImg.replaceAll("' width='[0-9]*' height='[0-9]*' align='[a-zA-Z]*' border='[0-9]*'","");
+						strImg = strImg.replace("../", "");
+						strReturnURL = address_replace + strImg;
+					}
+					
+					Log.d(TAG,x+" : "+z + " img string : " + strReturnURL);
 				}
 
 				if (trList != null) {
 
-					HttpItem h = new HttpItem(title, link, date, author);
+					HttpItem h = new HttpItem(title, link, date, author,strReturnURL);
 					addHttpItemToArray(h);
 				}
 			}

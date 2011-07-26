@@ -29,5 +29,11 @@
 		android:layout_toRightOf="@id/tvDate"
 		android:layout_alignParentRight="true"
 		></TextView>
+		<ImageView android:layout_height="wrap_content" 
+	    android:layout_width="wrap_content" 
+	    android:gravity="right"
+	    android:layout_toRightOf="@id/tvDate"
+	    android:id="@+id/ivDec"
+	    android:layout_alignParentRight="true"></ImageView>
 	</RelativeLayout>
 </LinearLayout>

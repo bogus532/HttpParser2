@@ -1,18 +1,31 @@
 package com.androidtest.HttpParser2;
 
+import java.io.BufferedInputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
+	private static final String TAG = "HttpItemAdapter";
+	
+	private final ImageDownloader imageDownloader = new ImageDownloader();
+	
 	Context context_this;
+	
+	BitmapFactory.Options options = new BitmapFactory.Options();
 	
     private ArrayList<HttpItem> items;
 
@@ -34,6 +47,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
 	            	TextView tvContents = (TextView) v.findViewById(R.id.tvContents);
 	                TextView tvDate = (TextView) v.findViewById(R.id.tvDate);
 	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor);
+	                ImageView ivGiflink = (ImageView) v.findViewById(R.id.ivDec);
                     
 	                tvContents.setTextSize(15);
                     tvContents.setText(this.getItem(position).toString());
@@ -53,8 +67,54 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                     	tvAuthor.setTextColor(Color.GRAY);
                     	tvAuthor.setText(b.getAuthor());
                     }
+                    
+                    if(ivGiflink != null)
+                    {
+                    	if(b.getGiflink()!=null)
+                    	{
+                    		Log.d(TAG, "Position : "+position +", URL : " + b.getGiflink());
+							Bitmap bm = GetImageFromURL(b.getGiflink());
+							ivGiflink.setImageBitmap(bm);
+							//Log.d(TAG, "URL : " + b.getGiflink());
+							// imageDownloader.download(b.getGiflink(), ivGiflink);
+							// httpItemImageDownloader.download(b.getGiflink(),
+							// ivDec,tvImagLink);
+                    	}
+                    }
             }
             return v;
+    }
+    
+    private Bitmap GetImageFromURL(String strImageURL) 
+    {
+        Bitmap imgBitmap = null;
+        Bitmap resized = null;
+        
+        options.inSampleSize =16;
+                
+        try
+        {
+        	URL url = new URL(strImageURL);
+        	URLConnection conn = url.openConnection();
+        	conn.connect();
+        	
+        	int nSize = conn.getContentLength();
+        	//Log.d(TAG,"nSize : "+nSize);
+        	BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
+        	
+        	imgBitmap = BitmapFactory.decodeStream(bis);
+        	resized = Bitmap.createScaledBitmap(imgBitmap, 40, 10, true);
+        	        	
+        	bis.close();
+        }
+        catch (Exception e)
+        {
+        	e.printStackTrace();
+        } finally {
+        	
+        }
+        
+        return resized;
     }
     
  }
