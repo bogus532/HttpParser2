@@ -10,7 +10,9 @@ import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +36,8 @@ public class HttpParser2 extends Activity {
 	ArticleItem selectedarticleitem;
 	
 	Intent intent;
+	
+	ProgressDialog mDialog;
 	
     /** Called when the activity is first created. */
     @Override
@@ -83,6 +87,8 @@ public class HttpParser2 extends Activity {
         	
         });
         
+        /*
+        // Non Thread
         try {
         	buildPostTagList();
 			
@@ -91,6 +97,11 @@ public class HttpParser2 extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
+        //Thread
+        setProgressDlg();
+		new parseArticle().execute();
+		
         ai = new ArticleItemAdapter(this,R.layout.article,ArticleItemArray);
         
  		ArticleItemListView.setAdapter(ai);
@@ -101,9 +112,10 @@ public class HttpParser2 extends Activity {
     	ArticleItemArray.add(_articleitem);
     }
     
-    private void buildPostTagList() throws MalformedURLException,IOException {
+    private int buildPostTagList() throws MalformedURLException,IOException {
 		
 		String title = null,link = null;
+		int result = 0;
 		
 		Source source = new Source(new URL(address));
 
@@ -143,9 +155,68 @@ public class HttpParser2 extends Activity {
 					}
 				}
 			}
+			
+			result =1;
 
 		}
-
+		return result;
 	}
     
+    private void setProgressDlg()
+    {
+    	mDialog = new ProgressDialog(this);
+		mDialog.setMax(100);
+		//mDialog.setTitle("Loading...");
+		mDialog.setMessage("Please wait....");
+		//mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 
+		mDialog.setIndeterminate(false);
+    } 
+    
+    private class parseArticle extends AsyncTask<Void, Integer, Integer> {    	
+ 	   
+ 		@Override
+		protected void onPreExecute() {
+				
+			super.onPreExecute();
+			mDialog.show();
+		}
+
+		@Override
+		protected Integer doInBackground(Void... arg0) {
+
+			int result = 0;
+			Log.d(TAG,"doInBackground");
+			while(result == 0)
+			{
+				try {
+					result = buildPostTagList();
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				Log.d(TAG,"result : "+result);
+			}
+			return null;
+		}  
+    	
+     	@Override
+    	protected void onProgressUpdate(Integer... progress) {
+     		//super.onProgressUpdate(progress);
+    	}
+  
+    	@Override
+    	protected void onPostExecute(Integer result) {
+    		super.onPostExecute(result);
+			mDialog.dismiss(); 
+			ArticleItemListView.setAdapter(ai);
+    	}
+  
+    	@Override
+		protected void onCancelled() {
+			super.onCancelled();
+		}
+
+		  	
+    }
 }

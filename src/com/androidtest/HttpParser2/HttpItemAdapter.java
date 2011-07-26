@@ -3,6 +3,7 @@ package com.androidtest.HttpParser2;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,10 +45,12 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                     }
                     
                     if(tvDate != null){
+                    	tvDate.setTextColor(Color.GRAY);
                     	tvDate.setText(b.getDateToString());
                     }
                     
                     if(tvAuthor != null){
+                    	tvAuthor.setTextColor(Color.GRAY);
                     	tvAuthor.setText(b.getAuthor());
                     }
             }

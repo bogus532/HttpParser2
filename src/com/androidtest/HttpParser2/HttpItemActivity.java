@@ -84,6 +84,7 @@ public class HttpItemActivity extends Activity {
         });
        
         /*
+        // Non Thread
         try {
         	buildTagList();
 			
@@ -93,7 +94,7 @@ public class HttpItemActivity extends Activity {
 			e.printStackTrace();
 		}
 		*/
-        //thread
+        //Thread
         setProgressDlg();
 		new parseHtml().execute();
         
@@ -181,8 +182,7 @@ public class HttpItemActivity extends Activity {
 					link = address_replace + link;
 				}
 				
-				//tdList.toString().replaceAll("<td><span", "<td");
-				
+			
 				for(int z=0; z < tdList.size();z++)
 				{
 					Element e_date = (Element) tdList.get(z);
