@@ -53,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * A local cache of downloaded images is maintained internally to improve performance.
  */
 public class ImageDownloader {
-    private static final String LOG_TAG = "ImageDownloader";
+    private static final String TAG = "ImageDownloader";
 
     public enum Mode { NO_ASYNC_TASK, NO_DOWNLOADED_DRAWABLE, CORRECT }
     private Mode mode = Mode.NO_ASYNC_TASK;
@@ -76,6 +76,18 @@ public class ImageDownloader {
             cancelPotentialDownload(url, imageView);
             imageView.setImageBitmap(bitmap);
         }
+     }
+    
+    public Bitmap getBitmap(String url)
+    {
+    	Bitmap bitmap = getBitmapFromCache(url);
+    	
+    	if(bitmap != null)
+    	{
+    		return bitmap;
+    	}
+    	
+    	return null;
     }
 
     /*
@@ -98,6 +110,7 @@ public class ImageDownloader {
         }
 
         if (cancelPotentialDownload(url, imageView)) {
+        	Log.d(TAG,"Mode : "+mode);
             switch (mode) {
                 case NO_ASYNC_TASK:
                     Bitmap bitmap = downloadBitmap(url);
@@ -196,13 +209,13 @@ public class ImageDownloader {
             }
         } catch (IOException e) {
             getRequest.abort();
-            Log.w(LOG_TAG, "I/O error while retrieving bitmap from " + url, e);
+            Log.w(TAG, "I/O error while retrieving bitmap from " + url, e);
         } catch (IllegalStateException e) {
             getRequest.abort();
-            Log.w(LOG_TAG, "Incorrect URL: " + url);
+            Log.w(TAG, "Incorrect URL: " + url);
         } catch (Exception e) {
             getRequest.abort();
-            Log.w(LOG_TAG, "Error while retrieving bitmap from " + url, e);
+            Log.w(TAG, "Error while retrieving bitmap from " + url, e);
         } finally {
             if ((client instanceof AndroidHttpClient)) {
                 ((AndroidHttpClient) client).close();

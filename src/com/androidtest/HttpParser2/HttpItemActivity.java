@@ -104,9 +104,19 @@ public class HttpItemActivity extends Activity {
 		
     }
     
+    @Override
+	public void onBackPressed() {
+    	super.onBackPressed();
+	}
+    
     private void addHttpItemToArray(HttpItem _httpitem)
     {
 		HttpItemArray.add(_httpitem);
+    }
+    
+    private void updateListView()
+    {
+      	//aa.notifyDataSetChanged();
     }
     
     private void setProgressDlg()
@@ -212,7 +222,8 @@ public class HttpItemActivity extends Activity {
 					Element e_img = (Element) tdList.get(z);
 					strImg = e_img.toString();
 					
-					if(strImg.contains("<img"))
+					//if(strImg.contains("<img"))
+					if(strImg.contains("<td class=\"post_name\"><img"))
 					{
 						strImg = e_img.toString();
 						strImg = strImg.replaceAll("<td class=\"post_name\"><img src='","");
@@ -280,6 +291,7 @@ public class HttpItemActivity extends Activity {
 			//Toast.makeText(HttpItemActivity.this, "작업이 끝났습니다.", Toast.LENGTH_SHORT).show();
 			mDialog.dismiss(); 
 			httpItemListView.setAdapter(aa);
+			updateListView();
     	}
   
     	@Override

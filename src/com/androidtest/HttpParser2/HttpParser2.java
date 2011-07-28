@@ -106,6 +106,11 @@ public class HttpParser2 extends Activity {
         
  		ArticleItemListView.setAdapter(ai);
     }
+    
+    @Override
+	public void onBackPressed() {
+    	super.onBackPressed();
+	}
      
     private void addArticleItemToArray(ArticleItem _articleitem)
     {

@@ -14,7 +14,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="HttpItemActivity"></activity>
+        <activity android:name="HttpItemActivity"
+        android:configChanges="keyboardHidden|orientation"></activity>
 
     </application>
 </manifest>
