@@ -134,8 +134,7 @@ public class HttpParser2 extends Activity {
 			List aList = trElement.getAllElements(HTMLElementName.A);
 			List spanList = trElement.getAllElements(HTMLElementName.SPAN);
 
-			Log.d(TAG, i + "li : " + liList.size() + " A : " + aList.size()
-					+ " Span : " + spanList.size());
+			//Log.d(TAG, i + "li : " + liList.size() + " A : " + aList.size()	+ " Span : " + spanList.size());
 
 			if (i == 3 || i == 4) {
 				for (int x = 0; x < liList.size(); x++) {
@@ -149,8 +148,8 @@ public class HttpParser2 extends Activity {
 							link = link.replace("../", "");
 							link = address_replace + link;
 
-							Log.d(TAG, i + " Title : " + title);
-							Log.d(TAG, i + " Link : " + link);
+							//Log.d(TAG, i + " Title : " + title);
+							//Log.d(TAG, i + " Link : " + link);
 
 							ArticleItem h = new ArticleItem(title, link);
 							addArticleItemToArray(h);
@@ -197,12 +196,14 @@ public class HttpParser2 extends Activity {
 					result = buildPostTagList();
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
+					result = 2;
 				} catch (IOException e) {
 					e.printStackTrace();
+					result = 2;
 				}
 				Log.d(TAG,"result : "+result);
 			}
-			return null;
+			return result;
 		}  
     	
      	@Override
@@ -213,8 +214,16 @@ public class HttpParser2 extends Activity {
     	@Override
     	protected void onPostExecute(Integer result) {
     		super.onPostExecute(result);
+    		if(result == 1)
+    		{
+    			ArticleItemListView.setAdapter(ai);
+    		}
+    		else if(result > 1)
+    		{
+    			Toast.makeText(HttpParser2.this, "Error", Toast.LENGTH_SHORT).show();
+    			onBackPressed();
+    		}
 			mDialog.dismiss(); 
-			ArticleItemListView.setAdapter(ai);
     	}
   
     	@Override

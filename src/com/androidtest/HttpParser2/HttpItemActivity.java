@@ -268,7 +268,6 @@ public class HttpItemActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			//Toast.makeText(HttpItemActivity.this, "작업을 시작합니다.", Toast.LENGTH_SHORT).show();
 			mDialog.show();
 		}
 
@@ -276,7 +275,6 @@ public class HttpItemActivity extends Activity {
 		protected Integer doInBackground(Void... arg0) {
 
 			int result = 0;
-			//Log.d(TAG,"doInBackground");
 			while(result == 0)
 			{
 				try {
@@ -288,7 +286,7 @@ public class HttpItemActivity extends Activity {
 				}
 				Log.d(TAG,"result : "+result);
 			}
-			return null;
+			return result;
 		}  
     	
      	@Override
@@ -299,10 +297,17 @@ public class HttpItemActivity extends Activity {
     	@Override
     	protected void onPostExecute(Integer result) {
     		super.onPostExecute(result);
-			//Toast.makeText(HttpItemActivity.this, "작업이 끝났습니다.", Toast.LENGTH_SHORT).show();
+			if(result == 1)
+			{
+				httpItemListView.setAdapter(aa);
+				updateListView();
+			}
+			else if(result > 1)
+			{
+				Toast.makeText(HttpItemActivity.this, "Error", Toast.LENGTH_SHORT).show();
+    			onBackPressed();
+			}
 			mDialog.dismiss(); 
-			httpItemListView.setAdapter(aa);
-			updateListView();
     	}
   
     	@Override

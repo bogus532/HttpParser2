@@ -6,7 +6,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import net.htmlparser.jericho.Element;
@@ -20,10 +19,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ContentsActivity extends Activity {
 	private static final String TAG = "ContentsActivity";
 	String address_replace = "http://clien.career.co.kr/cs2/";
+	
+	ContentsItem contentitem;
 	
 	ProgressDialog mDialog;
 	Intent intent;
@@ -53,7 +55,7 @@ public class ContentsActivity extends Activity {
         
         Log.d(TAG,"Link URL : "+intent_link);
         
-        ///*
+        /*
         // Non Thread
         try {
         	buildTagList();
@@ -65,8 +67,8 @@ public class ContentsActivity extends Activity {
 		}
 		//*/        
       //Thread
-        //setProgressDlg();
-		//new parseHtml().execute();
+        setProgressDlg();
+		new parseHtml().execute();
 	}
 	
 	private void setProgressDlg()
@@ -102,7 +104,7 @@ public class ContentsActivity extends Activity {
 			Element h3Element = (Element) h3tags.get(i);
 			h3Str = h3Element.getTextExtractor().toString();
 			Log.d(TAG,i+" - H3 Tag : "+h3Element.getTextExtractor().toString());
-			result = 1;
+			//result = 1;
 		}
 		
 		List<Element> h4tags = source.getAllElements(HTMLElementName.H4);
@@ -112,11 +114,8 @@ public class ContentsActivity extends Activity {
 			Element h4Element = (Element) h4tags.get(i);
 			h4Str = h4Element.getTextExtractor().toString();
 			Log.d(TAG,i+" - H4 Tag : "+h4Element.getTextExtractor().toString());
-			result = 1;
+			//result = 1;
 		}
-		
-		title = h3Str + h4Str;
-		textTitle.setText(title);
 		
 		List<Element> ptags = source.getAllElements(HTMLElementName.P);
 		
@@ -139,8 +138,10 @@ public class ContentsActivity extends Activity {
 				
 			}
 
-			result = 1;
+			
 		}
+		
+		title = h3Str + h4Str;
 		
 		List<Element> divtags = source.getAllElements(HTMLElementName.DIV);
 		for (int i = 0; i < divtags.size(); i++) {
@@ -191,14 +192,33 @@ public class ContentsActivity extends Activity {
 
 		}
 		
+		/*
+		textTitle.setText(title);
 		textId.setText(author);
 		textDate.setText(strDate);
-		content_str.replace("null", "");
-		
 		textContents.setText(content_str);
+		*/
+		result = 1;
+		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str);
+		
+		setContentsItem(ci);
 		
 		return result;
 		
+	}
+	
+	public ContentsItem setContentsItem(ContentsItem ci)
+	{
+		contentitem = ci;
+		return contentitem;
+	}
+	
+	private void setLayout()
+	{
+		textTitle.setText(contentitem._Title);
+		textId.setText(contentitem._Id);
+		textDate.setText(contentitem._Date);
+		textContents.setText(contentitem._Contents);
 	}
     
     private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	
@@ -220,25 +240,36 @@ public class ContentsActivity extends Activity {
 			{
 				try {
 					result = buildTagList();
+					
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
+					result = 2;
 				} catch (IOException e) {
 					e.printStackTrace();
+					result = 3;
 				}
 				Log.d(TAG,"result : "+result);
 			}
-			return null;
+			return result;
 		}  
     	
      	@Override
     	protected void onProgressUpdate(Integer... progress) {
-     		//super.onProgressUpdate(progress);
+ 
     	}
   
     	@Override
     	protected void onPostExecute(Integer result) {
     		super.onPostExecute(result);
-			
+    		if(result == 1)
+    		{
+    			setLayout();
+    		}
+    		else if(result > 1)
+    		{
+    			Toast.makeText(ContentsActivity.this, "Error", Toast.LENGTH_SHORT).show();
+    			onBackPressed();
+    		}
 			mDialog.dismiss(); 
 			
     	}
