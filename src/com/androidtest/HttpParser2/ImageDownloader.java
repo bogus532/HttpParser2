@@ -110,7 +110,7 @@ public class ImageDownloader {
         }
 
         if (cancelPotentialDownload(url, imageView)) {
-        	Log.d(TAG,"Mode : "+mode);
+        	//Log.d(TAG,"Mode : "+mode);
             switch (mode) {
                 case NO_ASYNC_TASK:
                     Bitmap bitmap = downloadBitmap(url);

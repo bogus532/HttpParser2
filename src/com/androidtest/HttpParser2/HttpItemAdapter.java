@@ -75,7 +75,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                     
                     if(ivGiflink != null)
                     {
-                    	Log.d(TAG, "ivGiflink -position : " +position);
+                    	//Log.d(TAG, "ivGiflink -position : " +position);
                     	ivGiflink.setImageBitmap(null);
                     	if(b.getGiflink()!=null)
                     	{

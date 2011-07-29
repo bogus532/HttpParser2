@@ -51,7 +51,7 @@ public class HttpItemActivity extends Activity {
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
         
-        Log.d(TAG,intent_link);
+        //Log.d(TAG,intent_link);
         
         httpItemListView = (ListView)this.findViewById(R.id.httpItemListView);
         
@@ -65,7 +65,7 @@ public class HttpItemActivity extends Activity {
   
  				if(selectedhttpitem != null)
  				{
- 					
+ 					/*
  					String uridata = selectedhttpitem.getLink();
  					
  					if(uridata == null)
@@ -79,6 +79,17 @@ public class HttpItemActivity extends Activity {
 	 				Uri uri = Uri.parse(uridata);
 	 				Intent intent  = new Intent(Intent.ACTION_VIEW,uri);
 	 				startActivity(intent);
+	 				*/
+ 					String uridata = selectedhttpitem.getLink();
+ 					if(uridata == null)
+ 					{
+ 						Toast.makeText(HttpItemActivity.this, R.string.data_null, Toast.LENGTH_SHORT).show();
+ 						return;
+ 					}
+ 					intent = new Intent(HttpItemActivity.this, ContentsActivity.class); 
+ 					intent.putExtra("Link", uridata);
+ 					startActivity(intent);
+	 				
   				}
 			}
         });
@@ -149,7 +160,7 @@ public class HttpItemActivity extends Activity {
 			Element trElement = (Element) tbodytags.get(i);
 			List<Element> trList = trElement.getAllElements(HTMLElementName.TR);
 
-			Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
+			//Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
 			
 			for(int x = 0; x < trList.size(); x++)
 			{
@@ -161,7 +172,7 @@ public class HttpItemActivity extends Activity {
 				{
 					Element e_title = (Element) tdList.get(y);
 					temp[y] = e_title.getTextExtractor().toString();
-					Log.d(TAG, x+" : "+y + " temp string : " + temp[y]);
+					//Log.d(TAG, x+" : "+y + " temp string : " + temp[y]);
 				}
 				
 				title = temp[1] + temp[2];
@@ -182,7 +193,7 @@ public class HttpItemActivity extends Activity {
 				{
 					Element e_link = (Element) aList.get(z);
 					link = e_link.getAttributeValue("href");
-					Log.d(TAG,x+" : "+z + " Link string : " + link);
+					//Log.d(TAG,x+" : "+z + " Link string : " + link);
 				}
 				
 				if(link != null)
@@ -212,7 +223,7 @@ public class HttpItemActivity extends Activity {
 	                    }
 					}
 					
-					Log.d(TAG,x+" : "+z + " date string : " + strDate);
+					//Log.d(TAG,x+" : "+z + " date string : " + strDate);
 				}
 				
 				strReturnURL = null;
@@ -234,7 +245,7 @@ public class HttpItemActivity extends Activity {
 						strReturnURL = address_replace + strImg;
 					}
 					
-					Log.d(TAG,x+" : "+z + " img string : " + strReturnURL);
+					//Log.d(TAG,x+" : "+z + " img string : " + strReturnURL);
 				}
 
 				if (trList != null) {
@@ -265,7 +276,7 @@ public class HttpItemActivity extends Activity {
 		protected Integer doInBackground(Void... arg0) {
 
 			int result = 0;
-			Log.d(TAG,"doInBackground");
+			//Log.d(TAG,"doInBackground");
 			while(result == 0)
 			{
 				try {

@@ -16,6 +16,7 @@
         </activity>
         <activity android:name="HttpItemActivity"
         android:configChanges="keyboardHidden|orientation"></activity>
+        <activity android:name="ContentsActivity"></activity>
 
     </application>
 </manifest>
