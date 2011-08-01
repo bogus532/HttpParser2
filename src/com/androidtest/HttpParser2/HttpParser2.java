@@ -45,6 +45,7 @@ public class HttpParser2 extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
+        setTitle(R.string.mainTitle);
         ArticleItemListView = (ListView)this.findViewById(R.id.ArticleItemListView);
         
         ArticleItemListView.setOnItemClickListener(new OnItemClickListener () {
@@ -73,6 +74,7 @@ public class HttpParser2 extends Activity {
 	 				startActivity(intent);
 	 				*/
  					String uridata = selectedarticleitem.getLink();
+ 					String titleText = selectedarticleitem.getTitle();
  					if(uridata == null)
  					{
  						Toast.makeText(HttpParser2.this, R.string.data_null, Toast.LENGTH_SHORT).show();
@@ -80,6 +82,7 @@ public class HttpParser2 extends Activity {
  					}
  					intent = new Intent(HttpParser2.this, HttpItemActivity.class); 
  					intent.putExtra("Link", uridata);
+ 					intent.putExtra("Title", titleText);
  					startActivity(intent);
  				}
 				

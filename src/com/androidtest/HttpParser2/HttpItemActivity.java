@@ -41,6 +41,7 @@ public class HttpItemActivity extends Activity {
 	
 	Intent intent;
 	String intent_link;
+	String intent_title;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -50,6 +51,9 @@ public class HttpItemActivity extends Activity {
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
+        intent_title = intent.getExtras().getString("Title").toString();
+        
+        setTitle(intent_title);
         
         //Log.d(TAG,intent_link);
         
@@ -175,14 +179,14 @@ public class HttpItemActivity extends Activity {
 					//Log.d(TAG, x+" : "+y + " temp string : " + temp[y]);
 				}
 				
-				title = temp[1] + temp[2];
-				
 				if(tdList.size() == 5)
 				{
+					title = temp[1];
 					author = temp[2];
 				}
 				else
 				{
+					title = temp[1] + temp[2];
 					author = temp[3];
 				}
 				
@@ -275,16 +279,24 @@ public class HttpItemActivity extends Activity {
 		protected Integer doInBackground(Void... arg0) {
 
 			int result = 0;
+			int count=0;
 			while(result == 0)
 			{
 				try {
 					result = buildTagList();
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
+					result = 2;
 				} catch (IOException e) {
 					e.printStackTrace();
+					result =3;
 				}
-				Log.d(TAG,"result : "+result);
+				Log.d(TAG,"result : "+result+", count : "+count);
+				count++;
+				if(count>5)
+				{
+					break;
+				}
 			}
 			return result;
 		}  
