@@ -34,6 +34,7 @@ public class ContentsActivity extends Activity {
 	ProgressDialog mDialog;
 	Intent intent;
 	String intent_link;
+	String intent_title;
 	
 	private final int DYNAMIC_VIEW_ID = 0x8000;
 	private LinearLayout dynamicLayout;
@@ -58,6 +59,8 @@ public class ContentsActivity extends Activity {
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
+        intent_title = intent.getExtras().getString("Title").toString();
+        setTitle(intent_title);
         
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
@@ -92,7 +95,7 @@ public class ContentsActivity extends Activity {
 		
 		String title = "",author = "";
 		String content_str = "";
-		String strDate = "",strImg = "";
+		String strDate = "";
 		String h3Str = "",h4Str = "";
 		String temp ="";
 		Date date = null;
@@ -100,7 +103,7 @@ public class ContentsActivity extends Activity {
 		int result=0;
 		int index = 0;
 		
-		Log.d(TAG,"buildTagList"+",Link : "+intent_link);
+		//Log.d(TAG,"buildTagList"+",Link : "+intent_link);
 		
 		Source source = new Source(new URL(intent_link));
 		
@@ -130,8 +133,6 @@ public class ContentsActivity extends Activity {
 		title = h3Str + h4Str;
 		
 		//Contents
-		///*
-		//List<Element> contenttags = source.getAllElements(HTMLElementName.DIV);
 		List<Element> contenttags = source.getAllElementsByClass("view_content");
 		
 		for (int i = 0; i < contenttags.size(); i++) {
@@ -142,35 +143,62 @@ public class ContentsActivity extends Activity {
 			
 			List<Element> ptags = contentElement.getAllElements(HTMLElementName.P);
 			List<Element> divtags = contentElement.getAllElements(HTMLElementName.DIV);
-			List<Element> imgtags = contentElement.getAllElementsByClass("attachedImage");
+			List<Element> spantags = contentElement.getAllElements(HTMLElementName.SPAN);
+			List<Element> attachimgtags = contentElement.getAllElementsByClass("attachedImage");
 			
-			Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+imgtags.size());
+			Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+attachimgtags.size());
 			
-			for(int x = 0; x < ptags.size();x++)
+			
+			if(attachimgtags.size() > 0)
 			{
-				Element pElement = (Element) ptags.get(x);
-				content_str += pElement.getTextExtractor().toString();
-				content_str += "\n";
-				//Log.d(TAG,x + " : "+content_str);
-			}
-			
-			/*
-			List<Element> divtags = contentElement.getAllElements(HTMLElementName.DIV);
-			for(int x = 0; x < divtags.size();x++)
-			{
-				Element divElement = (Element) divtags.get(x);
-				temp = divElement.toString();
-				if(temp.contains("writeContents"))
+				for(int x = 0; x < attachimgtags.size();x++)
 				{
-				content_str += divElement.getTextExtractor().toString();
-				content_str += "\n";
-				Log.d(TAG,x + " : "+content_str);
+					Element attachimgElement = (Element)attachimgtags.get(x);
+					List<Element> imgtags = attachimgElement.getAllElements(HTMLElementName.IMG);
+					
+					for(int z = 0; z < imgtags.size(); z++)
+					{
+						Element imgElement = (Element) imgtags.get(z);
+						temp = imgElement.getAttributeValue("src");
+						temp = temp.replace("../", "");
+						//temp = "<img src=\""+address_replace + temp+"\"/>";
+						temp = address_replace + temp;
+						Log.d(TAG,x + " : imgtags : "+temp);
+						content_str += temp;
+						content_str += "\n";
+						//z = imgtags.size();
+					}
 				}
 			}
-			*/
+			
+			 
+			if(ptags.size()>1)
+			{
+				for(int x = 0; x < ptags.size();x++)
+				{
+					Element pElement = (Element) ptags.get(x);
+					temp = pElement.getTextExtractor().toString();
+					//temp = pElement.toString();
+					content_str += temp;
+					content_str += "\n";
+					Log.d(TAG,x + " : p contents : "+temp);
+				}
+			}
+			else
+			{
+				for(int x = 0; x < spantags.size();x++)
+				{
+					Element spanElement = (Element) spantags.get(x);
+					temp = spanElement.getTextExtractor().toString();
+					//temp = spanElement.toString();
+					content_str += temp;
+					Log.d(TAG,x + " : span contents : "+temp);
+				}
+			}
+			//*/
+			
 		}
 
-		//*/
 		/*
 		
 		List<Element> spantags = source.getAllElementsByClass("view_content");
@@ -230,7 +258,7 @@ public class ContentsActivity extends Activity {
 					i = divtags.size();
 					result +=1;
 				}
-				Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
+				//Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
 			}
 
 		}
@@ -248,7 +276,7 @@ public class ContentsActivity extends Activity {
 				{
 					temp = pElement3.getTextExtractor().toString();
 					temp.replaceAll(", Hit : [0-9]* , Vote : [0-9]*", "");
-					Log.d(TAG,temp);
+					//Log.d(TAG,temp);
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 					try {
 						date = sdf.parse(temp);
@@ -261,7 +289,7 @@ public class ContentsActivity extends Activity {
 					result +=1;
 				}
 				
-				Log.d(TAG,i+" : "+x+" - Div Tag date : "+strDate);
+				//Log.d(TAG,i+" : "+x+" - Div Tag date : "+strDate);
 			}
 
 		}
@@ -269,20 +297,24 @@ public class ContentsActivity extends Activity {
 		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str);
 		
 		setContentsItem(ci);
+		Log.d(TAG,"Last Title : "+content_str);
 		Log.d(TAG,"result : "+result);
 		return result;
 		
 	}
 	
-	 public class ImageGetter implements Html.ImageGetter {
-		  public Drawable getDrawable(String source) {
-		   int id = 0;
-		   Drawable d = getResources().getDrawable(id);
-		   d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-		   return d;
-		  }
-		 }
-	
+	public class ImageGetter implements Html.ImageGetter {
+		public Drawable getDrawable(String source) {
+			Drawable d = null;
+			if (source != null) {
+				Log.d(TAG,"source : "+source);
+				d = Drawable.createFromPath(source);
+				d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+			}
+			return d;
+		}
+	}
+
 	public ContentsItem setContentsItem(ContentsItem ci)
 	{
 		contentitem = ci;
@@ -295,6 +327,7 @@ public class ContentsActivity extends Activity {
 		textId.setText(contentitem._Id);
 		textDate.setText(contentitem._Date);
 		textContents.setText(contentitem._Contents);
+		//textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
 	}
     
     private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	

@@ -95,6 +95,7 @@ public class HttpItemActivity extends Activity {
  					}
  					intent = new Intent(HttpItemActivity.this, ContentsActivity.class); 
  					intent.putExtra("Link", uridata);
+ 					intent.putExtra("Title", selectedhttpitem.getTitle());
  					startActivity(intent);
 	 				
   				}
@@ -187,6 +188,10 @@ public class HttpItemActivity extends Activity {
 					title = temp[1];
 					author = temp[2];
 				}
+				else if(tdList.size() == 1)
+				{
+					continue;
+				}
 				else
 				{
 					title = temp[1] + temp[2];
@@ -199,8 +204,11 @@ public class HttpItemActivity extends Activity {
 				for(int z=0; z < aList.size();z++)
 				{
 					Element e_link = (Element) aList.get(z);
-					link = e_link.getAttributeValue("href");
-					//Log.d(TAG,x+" : "+z + " Link string : " + link);
+					if(!e_link.getAttributeValue("href").contains("javascript"))
+					{
+						link = e_link.getAttributeValue("href");
+					}
+					Log.d(TAG,x+" : "+z + " Link string : " + link);
 				}
 				
 				if(link != null)

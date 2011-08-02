@@ -132,13 +132,13 @@ public class HttpParser2 extends Activity {
 
 		source.fullSequentialParse();
 		
-		List trtags = source.getAllElements(HTMLElementName.UL);
+		List<Element> trtags = source.getAllElements(HTMLElementName.UL);
 		for (int i = 0; i < trtags.size(); i++) {
 
 			Element trElement = (Element) trtags.get(i);
-			List liList = trElement.getAllElements(HTMLElementName.LI);
-			List aList = trElement.getAllElements(HTMLElementName.A);
-			List spanList = trElement.getAllElements(HTMLElementName.SPAN);
+			List<Element> liList = trElement.getAllElements(HTMLElementName.LI);
+			List<Element> aList = trElement.getAllElements(HTMLElementName.A);
+			List<Element> spanList = trElement.getAllElements(HTMLElementName.SPAN);
 
 			//Log.d(TAG, i + "li : " + liList.size() + " A : " + aList.size()	+ " Span : " + spanList.size());
 
