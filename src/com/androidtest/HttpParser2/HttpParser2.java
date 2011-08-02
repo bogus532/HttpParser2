@@ -12,6 +12,7 @@ import net.htmlparser.jericho.Source;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +48,8 @@ public class HttpParser2 extends Activity {
         
         setTitle(R.string.mainTitle);
         ArticleItemListView = (ListView)this.findViewById(R.id.ArticleItemListView);
+        
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         ArticleItemListView.setOnItemClickListener(new OnItemClickListener () {
         	
@@ -202,7 +205,11 @@ public class HttpParser2 extends Activity {
 					result = 2;
 				} catch (IOException e) {
 					e.printStackTrace();
-					result = 2;
+					result = 3;
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					result = 4;
 				}
 				Log.d(TAG,"result : "+result);
 			}

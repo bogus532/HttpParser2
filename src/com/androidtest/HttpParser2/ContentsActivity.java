@@ -14,8 +14,12 @@ import net.htmlparser.jericho.Source;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.util.Linkify;
+import android.text.Html;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,11 +51,15 @@ public class ContentsActivity extends Activity {
         textId = (TextView)this.findViewById(R.id.textId);
         textDate = (TextView)this.findViewById(R.id.textDate);
         textContents = (TextView)this.findViewById(R.id.textContents);
+        textContents.setAutoLinkMask(Linkify.WEB_URLS);
+        textContents.setLinksClickable(true);
         
         dynamicLayout = (LinearLayout)this.findViewById(R.id.dynamicArea);
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
+        
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         Log.d(TAG,"Link URL : "+intent_link);
         
@@ -90,6 +98,7 @@ public class ContentsActivity extends Activity {
 		Date date = null;
 		
 		int result=0;
+		int index = 0;
 		
 		Log.d(TAG,"buildTagList"+",Link : "+intent_link);
 		
@@ -121,85 +130,89 @@ public class ContentsActivity extends Activity {
 		title = h3Str + h4Str;
 		
 		//Contents
-		/*
-		List<Element> contenttags = source.getAllElements(HTMLElementName.DIV);
-		
-		for (int i = 0; i < contenttags.size(); i++) {
-
-			Element contentElement = (Element) contenttags.get(i);
-			String cStr = contentElement.toString();
-			Log.d(TAG,i + " : cStr : "+cStr);
-			if(cStr.contains("resContents"))
-			{
-				List<Element> ptags = contentElement.getAllElements(HTMLElementName.P);
-				Log.d(TAG,i+" - P Tag size : "+ptags.size());
-				
-				for(int x = 0; x < ptags.size();x++)
-				{
-					Element pElement = (Element) ptags.get(x);
-					String pStr = pElement.toString();
-					Log.d(TAG,x+" - pStr : "+pStr);
-					if(pStr.contains("<p")&&!pStr.contains("<p class="))
-					{
-						content_str += pElement.getTextExtractor().toString();
-						content_str +="\n";
-					}
-				}
-				i = contenttags.size();
-			}
-		}
-
-		//*/
 		///*
-		List<Element> contenttags = source.getAllElements(HTMLElementName.DIV);
+		//List<Element> contenttags = source.getAllElements(HTMLElementName.DIV);
+		List<Element> contenttags = source.getAllElementsByClass("view_content");
 		
 		for (int i = 0; i < contenttags.size(); i++) {
 
 			Element contentElement = (Element) contenttags.get(i);
 			String cStr = contentElement.toString();
 			Log.d(TAG,i + " : cStr : "+cStr);
-			if(cStr.contains("resContents"))
+			
+			List<Element> ptags = contentElement.getAllElements(HTMLElementName.P);
+			List<Element> divtags = contentElement.getAllElements(HTMLElementName.DIV);
+			List<Element> imgtags = contentElement.getAllElementsByClass("attachedImage");
+			
+			Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+imgtags.size());
+			
+			for(int x = 0; x < ptags.size();x++)
 			{
-				List<Element> spantags = contentElement.getAllElements(HTMLElementName.SPAN);
-				Log.d(TAG,i+" - SPAN Tag size : "+spantags.size());
-				
-				for(int x = 0; x < spantags.size();x++)
-				{
-					Element spanElement = (Element) spantags.get(x);
-					String spanStr = spanElement.toString();
-					Log.d(TAG,x+" - spanStr : "+spanStr);
-					if(spanStr.contains("writeContents"))
-					{
-						
-						content_str += spanElement.getContent().toString();
-
-						content_str = content_str.replaceAll("<p>","");
-						content_str = content_str.replaceAll("&nbsp;","\n");
-						content_str = content_str.replaceAll("</p>","");
-						content_str = content_str.replaceAll("<br />","");
-						content_str = content_str.replaceAll("<a href=\"*\">","");
-						x = spantags.size();
-					}
-				}
-				i = contenttags.size();
+				Element pElement = (Element) ptags.get(x);
+				content_str += pElement.getTextExtractor().toString();
+				content_str += "\n";
+				//Log.d(TAG,x + " : "+content_str);
 			}
+			
+			/*
+			List<Element> divtags = contentElement.getAllElements(HTMLElementName.DIV);
+			for(int x = 0; x < divtags.size();x++)
+			{
+				Element divElement = (Element) divtags.get(x);
+				temp = divElement.toString();
+				if(temp.contains("writeContents"))
+				{
+				content_str += divElement.getTextExtractor().toString();
+				content_str += "\n";
+				Log.d(TAG,x + " : "+content_str);
+				}
+			}
+			*/
 		}
 
 		//*/
 		/*
-		List<Element> contenttags = source.getAllElements(HTMLElementName.DIV);
-		for (int i = 0; i < contenttags.size(); i++) {
-			Element contentElement = (Element) contenttags.get(i);
-			String cStr = contentElement.toString();
-			Log.d(TAG,i+" : "+cStr);
-			if(cStr.contains("resContents"))
-			{
-				content_str = contentElement.getTextExtractor().toString();
-				i=contenttags.size();
-			}
+		
+		List<Element> spantags = source.getAllElementsByClass("view_content");
+		
+		Log.d(TAG," - SPAN Tag size : "+spantags.size());
+
+		for(int x = 0; x < spantags.size();x++)
+		{
+			Element spanElement = (Element) spantags.get(x);
+			String spanStr = spanElement.toString();
+			Log.d(TAG,x+" - spanStr : "+spanStr);
+						
+			content_str += spanElement.getContent().toString();
+			
+			content_str = content_str.replaceAll("<span (.*?)>","");
+			content_str = content_str.replaceAll("<div (.*?)>","");
+			content_str = content_str.replaceAll("<p (.*?)>","");
+			content_str = content_str.replaceAll("<font (.*?)>","");
+			content_str = content_str.replaceAll("<div>","");
+			content_str = content_str.replaceAll("</div>","");
+			content_str = content_str.replaceAll("</span>","");
+			content_str = content_str.replaceAll("</font>","");
+			content_str = content_str.replaceAll("<p>","");
+			content_str = content_str.replaceAll("&nbsp;","");
+			content_str = content_str.replaceAll("</p>","\n");
+			content_str = content_str.replaceAll("<br />","");
+			content_str = content_str.replaceAll("<a (.*?)>","");
+			content_str = content_str.replaceAll("<a href=\"(.*?)\">","");
+			content_str = content_str.replaceAll("<A HREF=\"(.*?)\" TARGET='(.*?)'>","");
+			content_str = content_str.replaceAll("</A>","");
+			content_str = content_str.replaceAll("</a>","");
+			content_str = content_str.replaceAll("<img (.*?)>","");
+			content_str = content_str.replaceAll("&gt;",">");
+			content_str = content_str.replaceAll("<!-- (.*?) -->","");
+				
+				//content_str += spanElement.getTextExtractor().toString();
+				
+			//	x = spantags.size();
+			
 		}
 		//*/
-		
+				
 		//author
 		List<Element> divtags = source.getAllElements(HTMLElementName.DIV);
 		for (int i = 0; i < divtags.size(); i++) {
@@ -261,6 +274,15 @@ public class ContentsActivity extends Activity {
 		
 	}
 	
+	 public class ImageGetter implements Html.ImageGetter {
+		  public Drawable getDrawable(String source) {
+		   int id = 0;
+		   Drawable d = getResources().getDrawable(id);
+		   d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+		   return d;
+		  }
+		 }
+	
 	public ContentsItem setContentsItem(ContentsItem ci)
 	{
 		contentitem = ci;
@@ -289,7 +311,7 @@ public class ContentsActivity extends Activity {
 		protected Integer doInBackground(Void... arg0) {
 
 			int result = 0,count=0;
-			//Log.d(TAG,"doInBackground");
+
 			while(result == 0)
 			{
 				try {
@@ -301,6 +323,9 @@ public class ContentsActivity extends Activity {
 				} catch (IOException e) {
 					e.printStackTrace();
 					result = 7;
+				} catch (Exception e) {
+					e.printStackTrace();
+					result = 8;
 				}
 				Log.d(TAG,"result : "+result+", count : "+count);
 				count++;
