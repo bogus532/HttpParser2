@@ -1,8 +1,12 @@
 package com.androidtest.HttpParser2;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,14 +17,21 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.util.Linkify;
+import android.os.Environment;
 import android.text.Html;
+import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +39,8 @@ import android.widget.Toast;
 public class ContentsActivity extends Activity {
 	private static final String TAG = "ContentsActivity";
 	String address_replace = "http://clien.career.co.kr/cs2/";
+	
+	BitmapFactory.Options options = new BitmapFactory.Options();
 	
 	ContentsItem contentitem;
 	
@@ -42,6 +55,8 @@ public class ContentsActivity extends Activity {
 	TextView textId;
 	TextView textDate;
 	TextView textContents;
+	
+	Display display;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,9 @@ public class ContentsActivity extends Activity {
         setTitle(intent_title);
         
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        
+        Context context = getApplicationContext();
+        display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         
         Log.d(TAG,"Link URL : "+intent_link);
         
@@ -161,8 +179,8 @@ public class ContentsActivity extends Activity {
 						Element imgElement = (Element) imgtags.get(z);
 						temp = imgElement.getAttributeValue("src");
 						temp = temp.replace("../", "");
-						//temp = "<img src=\""+address_replace + temp+"\"/>";
-						temp = address_replace + temp;
+						temp = "<img src=\""+address_replace + temp+"\"/>";
+						//temp = address_replace + temp;
 						Log.d(TAG,x + " : imgtags : "+temp);
 						content_str += temp;
 						content_str += "\n";
@@ -305,14 +323,53 @@ public class ContentsActivity extends Activity {
 	
 	public class ImageGetter implements Html.ImageGetter {
 		public Drawable getDrawable(String source) {
-			Drawable d = null;
-			if (source != null) {
-				Log.d(TAG,"source : "+source);
-				d = Drawable.createFromPath(source);
-				d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-			}
-			return d;
-		}
+			Bitmap imgBitmap = null;
+	        Bitmap resized = null;
+	        Drawable drawable = null;
+	        
+	        options.inSampleSize =16;
+	                
+	        try
+	        {
+	        	URL url = new URL(source);
+	        	URLConnection conn = url.openConnection();
+	        	conn.connect();
+	        	
+	        	int nSize = conn.getContentLength();
+	        	Log.d("HttpItemParser","nSize : "+nSize);
+	        	BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
+	        	
+	        	FileOutputStream fileout = new FileOutputStream(new File(
+                        Environment.getExternalStorageDirectory()
+                                        .getAbsolutePath()
+                                        + "/test.jpg"));
+	        	
+	        	imgBitmap = BitmapFactory.decodeStream(bis);
+	        	int imgheight = imgBitmap.getHeight();
+	        	int imgwidth = imgBitmap.getWidth();
+	        	Log.d(TAG,"height : "+imgheight+", width : "+imgwidth);
+	        	resized = Bitmap.createScaledBitmap(imgBitmap, display.getWidth(), display.getHeight()/2, true);
+	        	
+	        	resized.compress(CompressFormat.JPEG, 100, fileout);
+	        	
+	        	fileout.flush();
+                fileout.close();
+                drawable = Drawable.createFromPath(Environment
+                                .getExternalStorageDirectory().getAbsolutePath()
+                                + "/test.jpg");
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable
+                                .getIntrinsicHeight());	        	
+	        	
+	        	bis.close();
+	        }
+	        catch (Exception e)
+	        {
+	        	e.printStackTrace();
+	        } finally {
+	        	
+	        }
+            return drawable;
+    }
 	}
 
 	public ContentsItem setContentsItem(ContentsItem ci)
@@ -326,8 +383,8 @@ public class ContentsActivity extends Activity {
 		textTitle.setText(contentitem._Title);
 		textId.setText(contentitem._Id);
 		textDate.setText(contentitem._Date);
-		textContents.setText(contentitem._Contents);
-		//textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
+		//textContents.setText(contentitem._Contents);
+		textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
 	}
     
     private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	

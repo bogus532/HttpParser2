@@ -67,7 +67,7 @@ public class HttpItemImageDownloader {
         	BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
         	
         	imgBitmap = BitmapFactory.decodeStream(bis);
-        	resized = Bitmap.createScaledBitmap(imgBitmap, 40, 10, true);
+        	resized = Bitmap.createScaledBitmap(imgBitmap, 100, 100, true);
         	        	
         	bis.close();
         }
