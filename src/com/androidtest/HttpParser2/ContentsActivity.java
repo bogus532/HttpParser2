@@ -196,10 +196,15 @@ public class ContentsActivity extends Activity {
 				{
 					Element pElement = (Element) ptags.get(x);
 					temp = pElement.getTextExtractor().toString();
-					//temp = pElement.toString();
-					content_str += temp;
-					content_str += "\n";
-					Log.d(TAG,x + " : p contents : "+temp);
+					temp = pElement.toString();
+					Log.d(TAG,x + " : temp contents : "+temp);
+					if(!temp.contains("view_content_btn")||!temp.contains("&nbsp;"))
+					{
+						content_str += temp;
+						//content_str += "\n";
+						//content_str = "<br>"+content_str;
+					}
+					//Log.d(TAG,x + " : p contents : "+content_str);
 				}
 			}
 			else
@@ -207,8 +212,8 @@ public class ContentsActivity extends Activity {
 				for(int x = 0; x < spantags.size();x++)
 				{
 					Element spanElement = (Element) spantags.get(x);
-					temp = spanElement.getTextExtractor().toString();
-					//temp = spanElement.toString();
+					//temp = spanElement.getTextExtractor().toString();
+					temp = spanElement.toString();
 					content_str += temp;
 					Log.d(TAG,x + " : span contents : "+temp);
 				}
@@ -328,6 +333,8 @@ public class ContentsActivity extends Activity {
 	        Drawable drawable = null;
 	        
 	        options.inSampleSize =16;
+	        
+	        Log.d(TAG,"source : "+source);
 	                
 	        try
 	        {
@@ -336,7 +343,7 @@ public class ContentsActivity extends Activity {
 	        	conn.connect();
 	        	
 	        	int nSize = conn.getContentLength();
-	        	Log.d("HttpItemParser","nSize : "+nSize);
+	        	//Log.d(TAG,"nSize : "+nSize);
 	        	BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), nSize);
 	        	
 	        	FileOutputStream fileout = new FileOutputStream(new File(
@@ -348,7 +355,7 @@ public class ContentsActivity extends Activity {
 	        	int imgheight = imgBitmap.getHeight();
 	        	int imgwidth = imgBitmap.getWidth();
 	        	Log.d(TAG,"height : "+imgheight+", width : "+imgwidth);
-	        	resized = Bitmap.createScaledBitmap(imgBitmap, display.getWidth(), display.getHeight()/2, true);
+	        	resized = Bitmap.createScaledBitmap(imgBitmap, imgwidth/2, imgheight/2, true);
 	        	
 	        	resized.compress(CompressFormat.JPEG, 100, fileout);
 	        	
