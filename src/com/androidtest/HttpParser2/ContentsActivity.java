@@ -57,7 +57,7 @@ public class ContentsActivity extends Activity {
 	//".resContents      { width: \"100%\"; }"+
 	//".commentContents  { width: \"100%\"; }"+
 	"</style>";
-	String endtag = "</body></html>";
+	String endtag = " <끝> </body></html>";
 	
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	
@@ -90,7 +90,17 @@ public class ContentsActivity extends Activity {
         textContents.setAutoLinkMask(Linkify.WEB_URLS);
         textContents.setLinksClickable(true);
         
-        dynamicLayout = (LinearLayout)this.findViewById(R.id.dynamicArea);
+        textTitle.setBackgroundColor(Color.WHITE);
+        textTitle.setTextColor(Color.BLACK);
+        
+        textId.setBackgroundColor(Color.WHITE);
+        textId.setTextColor(Color.BLACK);
+        
+        textDate.setBackgroundColor(Color.WHITE);
+        textDate.setTextColor(Color.BLACK);
+        
+        textContents.setBackgroundColor(Color.WHITE);
+        textContents.setTextColor(Color.BLACK);        
         
         webView = (WebView)this.findViewById(R.id.webview);
         //webView.setBackgroundColor(Color.BLACK);
@@ -189,22 +199,26 @@ public class ContentsActivity extends Activity {
 			Element replyElement = (Element) replytags.get(i);
 			String cStr = replyElement.toString();
 			//Log.d("replytags",i + " : cStr : "+cStr);
-			//reply_str += cStr;
+			reply_str += cStr;
 		}
 		
-		//content_str = content_str.replaceAll("<div class=\"signature\">","");
-		content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
+		content_str = content_str.replaceAll("<div class=\"signature\"","<!-- <div class=\"signature\"");
+		content_str = content_str.replaceAll("</dd></dl></div>","</dd></dl></div> -->");
+		//content_str = content_str.replaceAll("<div class=\"ccl\"><a rel=\"(.*?)\" href=\"(.*?)\" title=\"(.*?)\" target=_blank><img src=\"(.*?)\"><img src=\"(.*?)\"><img src=\"(.*?)\"></a></div> ","");
+		content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
+		//content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
 		//content_str = content_str.replaceAll("<div class=\"ccl\"> (.*?) </div>","");
 		//content_str = content_str.replaceAll("<div class=\"ccl\">","");
 		//content_str = content_str.replaceAll("/cs2/img/signature.gif","http://clien.career.co.kr/cs2/img/signature.gif");
 		
 		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
-		Log.d("total",content_str);
+		//Log.d("total",content_str);
 		
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
 		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
-		//Log.d("replytags",reply_str);
+		reply_str = reply_str.replaceAll("</textarea>(.*?)</div>","</textarea></div>");
+		Log.d("replytags",reply_str);
 		content_str += reply_str;		
 		//Log.d("total",content_str);
 		
@@ -579,6 +593,7 @@ public class ContentsActivity extends Activity {
 		//textContents.setText(contentitem._Contents);
 		//textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
 		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setVerticalScrollBarEnabled(false);
 		try {
 			webView.loadData(headtag
 				+contentitem._Contents+endtag, "text/html", "utf-8");
