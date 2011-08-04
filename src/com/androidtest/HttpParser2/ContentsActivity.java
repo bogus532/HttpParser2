@@ -23,6 +23,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,23 @@ import android.widget.Toast;
 public class ContentsActivity extends Activity {
 	private static final String TAG = "ContentsActivity";
 	String address_replace = "http://clien.career.co.kr/cs2/";
+	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
+	String address_replace_data = "http://clien.career.co.kr/cs2/data";
+	String headtag ="<head>"+
+	"<link href=\"http://clien.career.co.kr/cs2/css/style.css?v=20110712\" rel=\"stylesheet\" type=\"text/css\" />"+
+	"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>"+ 
+	"<meta http-equiv=\"Imagetoolbar\" content=\"no\" />"+
+	//"<meta name=\"viewport\" content=\"user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width\" />"+
+	"<link rel=\"stylesheet\" href=\"http://clien.career.co.kr/cs2/style.css?v=20110712\" type=\"text/css\" />"+	
+	//"<script type='text/javascript' src='http://ad.clien.net/ad/www/delivery/spcjs.php?id=1&amp;blockcampaign=1&amp;charset=UTF-8'></script>"+
+	"</head> <html><body>"+
+	"<style>"+ 
+	".resContents      img { max-width:280; width: expression(this.width > 280 ? 280: true); }"+
+	".commentContents  img { max-width:280; width: expression(this.width > 280 ? 280: true); }"+
+	//".resContents      { width: \"100%\"; }"+
+	//".commentContents  { width: \"100%\"; }"+
+	"</style>";
+	String endtag = "</body></html>";
 	
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	
@@ -55,6 +74,7 @@ public class ContentsActivity extends Activity {
 	TextView textId;
 	TextView textDate;
 	TextView textContents;
+	WebView webView;
 	
 	Display display;
 	
@@ -71,6 +91,9 @@ public class ContentsActivity extends Activity {
         textContents.setLinksClickable(true);
         
         dynamicLayout = (LinearLayout)this.findViewById(R.id.dynamicArea);
+        
+        webView = (WebView)this.findViewById(R.id.webview);
+        //webView.setBackgroundColor(Color.BLACK);
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
@@ -109,6 +132,151 @@ public class ContentsActivity extends Activity {
 		//mDialog.onKeyDown(keyCode, event)
     }
 	
+	//by webview & jericho parser
+	private int buildTagList2() throws MalformedURLException,IOException {
+		String title = "",author = "";
+		String content_str = "";
+		String reply_str = "";
+		String strDate = "";
+		String h3Str = "",h4Str = "";
+		String temp ="";
+		Date date = null;
+		
+		int result=0;
+		
+		Source source = new Source(new URL(intent_link));
+		
+		source.fullSequentialParse();
+		//Title
+		List<Element> h3tags = source.getAllElements(HTMLElementName.H3);
+		Log.d(TAG,"h3tags.size : "+h3tags.size());
+		for (int i = 0; i < h3tags.size(); i++) {
+
+			Element h3Element = (Element) h3tags.get(i);
+			h3Str = h3Element.getTextExtractor().toString();
+			Log.d(TAG,i+" - H3 Tag : "+h3Element.getTextExtractor().toString());
+			result += 1;
+		}
+		
+		List<Element> h4tags = source.getAllElements(HTMLElementName.H4);
+		
+		for (int i = 0; i < h4tags.size(); i++) {
+
+			Element h4Element = (Element) h4tags.get(i);
+			h4Str = h4Element.getTextExtractor().toString();
+			Log.d(TAG,i+" - H4 Tag : "+h4Element.getTextExtractor().toString());
+			result += 1;
+		}
+		
+		title = h3Str + h4Str;
+		
+		//contents
+		List<Element> contenttags = source.getAllElementsByClass("view_content");
+		
+		for (int i = 0; i < contenttags.size(); i++) {
+
+			Element contentElement = (Element) contenttags.get(i);
+			String cStr = contentElement.toString();
+			Log.d("contenttags",i + " : cStr : "+cStr);
+			content_str += cStr;
+		}
+		
+		//contents - reply
+		List<Element> replytags = source.getAllElementsByClass("reply_base");
+		
+		for (int i = 0; i < replytags.size(); i++) {
+
+			Element replyElement = (Element) replytags.get(i);
+			String cStr = replyElement.toString();
+			//Log.d("replytags",i + " : cStr : "+cStr);
+			//reply_str += cStr;
+		}
+		
+		//content_str = content_str.replaceAll("<div class=\"signature\">","");
+		content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
+		//content_str = content_str.replaceAll("<div class=\"ccl\"> (.*?) </div>","");
+		//content_str = content_str.replaceAll("<div class=\"ccl\">","");
+		//content_str = content_str.replaceAll("/cs2/img/signature.gif","http://clien.career.co.kr/cs2/img/signature.gif");
+		
+		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
+		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
+		Log.d("total",content_str);
+		
+		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
+		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
+		//Log.d("replytags",reply_str);
+		content_str += reply_str;		
+		//Log.d("total",content_str);
+		
+		//author
+		List<Element> divtags = source.getAllElements(HTMLElementName.DIV);
+		for (int i = 0; i < divtags.size(); i++) {
+			Element divElement = (Element) divtags.get(i);
+			List<Element> ptags2 = divElement.getAllElements(HTMLElementName.P);
+			for(int x = 0; x < ptags2.size();x++)
+			{
+				Element pElement2 = (Element) ptags2.get(x);
+				String pStr = pElement2.toString();
+				
+				if(pStr.contains("user_info"))
+				{
+					author = pElement2.getTextExtractor().toString();
+					x = ptags2.size();
+					i = divtags.size();
+					result +=1;
+				}
+				Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
+			}
+
+		}
+		
+		if(author.equals("님"))
+		{
+			//Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		}
+		
+		//Date
+		for (int i = 0; i < divtags.size(); i++) {
+			Element divElement = (Element) divtags.get(i);
+			List<Element> ptags3 = divElement.getAllElements(HTMLElementName.P);
+			for(int x = 0; x < ptags3.size();x++)
+			{
+				Element pElement3 = (Element) ptags3.get(x);
+				String pStr = pElement3.toString();
+				
+				if(pStr.contains("post_info"))
+				{
+					temp = pElement3.getTextExtractor().toString();
+					temp.replaceAll(", Hit : [0-9]* , Vote : [0-9]*", "");
+					//Log.d(TAG,temp);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+					try {
+						date = sdf.parse(temp);
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					strDate = sdf.format(date);
+					x = ptags3.size();
+					i = divtags.size();
+					result +=1;
+				}
+				
+				//Log.d(TAG,i+" : "+x+" - Div Tag date : "+strDate);
+			}
+
+		}
+
+		
+		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str);
+		
+		setContentsItem(ci);
+		//Log.d(TAG,"Last Title : "+content_str);
+		Log.d(TAG,"result : "+result);
+		return result;
+		
+	}
+	
+	//by jericho parser
 	private int buildTagList() throws MalformedURLException,IOException {
 		
 		String title = "",author = "";
@@ -162,9 +330,12 @@ public class ContentsActivity extends Activity {
 			List<Element> ptags = contentElement.getAllElements(HTMLElementName.P);
 			List<Element> divtags = contentElement.getAllElements(HTMLElementName.DIV);
 			List<Element> spantags = contentElement.getAllElements(HTMLElementName.SPAN);
+			List<Element> ahreftags = contentElement.getAllElements(HTMLElementName.A);
 			List<Element> attachimgtags = contentElement.getAllElementsByClass("attachedImage");
+			List<Element> viewcontenttags = contentElement.getAllElementsByClass("view_content");
 			
-			Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+attachimgtags.size());
+			Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+attachimgtags.size()
+					+", ahreftags : "+ahreftags.size());
 			
 			
 			if(attachimgtags.size() > 0)
@@ -190,30 +361,28 @@ public class ContentsActivity extends Activity {
 			}
 			
 			 
-			if(ptags.size()>1)
+			if(ptags.size()>2)
 			{
 				for(int x = 0; x < ptags.size();x++)
 				{
 					Element pElement = (Element) ptags.get(x);
 					temp = pElement.getTextExtractor().toString();
-					temp = pElement.toString();
+					temp = "<p>"+temp+"</p>";
 					Log.d(TAG,x + " : temp contents : "+temp);
-					if(!temp.contains("view_content_btn")||!temp.contains("&nbsp;"))
-					{
-						content_str += temp;
-						//content_str += "\n";
-						//content_str = "<br>"+content_str;
-					}
+					content_str += temp;
+					//content_str += "";
+					
 					//Log.d(TAG,x + " : p contents : "+content_str);
 				}
 			}
 			else
 			{
-				for(int x = 0; x < spantags.size();x++)
+				for(int x = 0; x < viewcontenttags.size();x++)
 				{
 					Element spanElement = (Element) spantags.get(x);
 					//temp = spanElement.getTextExtractor().toString();
 					temp = spanElement.toString();
+					temp = temp.replaceAll("&nbsp;", "");
 					content_str += temp;
 					Log.d(TAG,x + " : span contents : "+temp);
 				}
@@ -263,6 +432,18 @@ public class ContentsActivity extends Activity {
 			
 		}
 		//*/
+		
+		//reply
+		List<Element> replytags = source.getAllElementsByClass("reply_base");
+		
+		for (int i = 0; i < replytags.size(); i++) {
+
+			Element contentElement = (Element) replytags.get(i);
+			String cStr = contentElement.toString();
+			Log.d(TAG,i + " : reply : "+cStr);
+			//content_str += cStr;
+		}
+		
 				
 		//author
 		List<Element> divtags = source.getAllElements(HTMLElementName.DIV);
@@ -281,9 +462,14 @@ public class ContentsActivity extends Activity {
 					i = divtags.size();
 					result +=1;
 				}
-				//Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
+				Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
 			}
 
+		}
+		
+		if(author.equals("님"))
+		{
+			Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		}
 		
 		//Date
@@ -320,7 +506,7 @@ public class ContentsActivity extends Activity {
 		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str);
 		
 		setContentsItem(ci);
-		Log.d(TAG,"Last Title : "+content_str);
+		//Log.d(TAG,"Last Title : "+content_str);
 		Log.d(TAG,"result : "+result);
 		return result;
 		
@@ -391,7 +577,15 @@ public class ContentsActivity extends Activity {
 		textId.setText(contentitem._Id);
 		textDate.setText(contentitem._Date);
 		//textContents.setText(contentitem._Contents);
-		textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
+		//textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
+		webView.getSettings().setJavaScriptEnabled(true);
+		try {
+			webView.loadData(headtag
+				+contentitem._Contents+endtag, "text/html", "utf-8");
+		} catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
     
     private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	
@@ -412,7 +606,8 @@ public class ContentsActivity extends Activity {
 			while(result == 0)
 			{
 				try {
-					result = buildTagList();
+					//result = buildTagList();
+					result = buildTagList2();
 					
 				} catch (MalformedURLException e) {
 					e.printStackTrace();

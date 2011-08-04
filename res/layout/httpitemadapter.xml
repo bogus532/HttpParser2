@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="vertical">
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="horizontal">
+	<!--     <ImageView android:layout_height="wrap_content" 
+	    android:src="@drawable/icon" 
+	    android:layout_width="wrap_content" 
+	    android:id="@+id/imageViewDec"></ImageView> -->
+	    <TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text=""
+			android:id="@+id/tvContents2"></TextView>
+	</LinearLayout>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="horizontal">
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:text="textview"
+			android:id="@+id/tvDate2"
+			android:layout_gravity="left"></TextView>
+		</LinearLayout>
+		<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<TextView android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:text="textview" 
+		android:gravity="right" 
+		android:id="@+id/tvAuthor2"
+		android:layout_alignParentRight="true"
+		></TextView>
+		<ImageView android:layout_height="fill_parent" 
+	    android:layout_width="wrap_content" 
+	    android:layout_gravity="right"
+	    android:id="@+id/ivDec2"
+	    android:layout_alignParentRight="true"></ImageView>
+	    </FrameLayout>
+	</LinearLayout>
+</LinearLayout>

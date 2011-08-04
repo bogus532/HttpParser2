@@ -256,7 +256,7 @@ public class HttpItemActivity extends Activity {
 						strImg = strImg.replaceAll("></a></td>","");
 						strImg = strImg.replaceAll("></td>","");
 						strImg = strImg.replaceAll("' width='[0-9]*' height='[0-9]*' align='[a-zA-Z]*' border='[0-9]*'","");
-						strImg = strImg.replace("../", "");
+						strImg = strImg.replace("\\.\\./", "");
 						strReturnURL = address_replace + strImg;
 					}
 					

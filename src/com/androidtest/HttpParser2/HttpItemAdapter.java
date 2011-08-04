@@ -45,14 +45,21 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                         
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater)context_this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.row, null);
+                //v = vi.inflate(R.layout.row, null);
+                v = vi.inflate(R.layout.httpitemadapter, null);
             }
             HttpItem b = items.get(position);
             if (b != null) {
+            	/*
 	            	TextView tvContents = (TextView) v.findViewById(R.id.tvContents);
 	                TextView tvDate = (TextView) v.findViewById(R.id.tvDate);
 	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor);
 	                final ImageView ivGiflink = (ImageView) v.findViewById(R.id.ivDec);
+	                */
+	            	TextView tvContents = (TextView) v.findViewById(R.id.tvContents2);
+	                TextView tvDate = (TextView) v.findViewById(R.id.tvDate2);
+	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor2);
+	                final ImageView ivGiflink = (ImageView) v.findViewById(R.id.ivDec2);
                     
 	                tvContents.setTextSize(15);
                     tvContents.setText(this.getItem(position).toString());
