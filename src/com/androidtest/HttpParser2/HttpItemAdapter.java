@@ -63,8 +63,8 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                     
 	                tvContents.setTextSize(15);
                     tvContents.setText(this.getItem(position).toString());
-                    tvContents.setAutoLinkMask(Linkify.WEB_URLS);
-                    tvContents.setLinksClickable(true);
+                    //tvContents.setAutoLinkMask(Linkify.WEB_URLS);
+                    //tvContents.setLinksClickable(true);
     				
                     if (tvContents != null){
                     	tvContents.setText(b.getTitle());                           

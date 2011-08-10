@@ -2,6 +2,7 @@ package com.androidtest.HttpParser2;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -43,21 +44,27 @@ public class ContentsActivity extends Activity {
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
 	String address_replace_data = "http://clien.career.co.kr/cs2/data";
-	String headtag ="<head>"+
+	///*
+	String headtag ="<html xmlns=\"http://www.w3.org/1999/xhtml\">"+
+	"<head>"+
 	"<link href=\"http://clien.career.co.kr/cs2/css/style.css?v=20110712\" rel=\"stylesheet\" type=\"text/css\" />"+
 	"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>"+ 
 	"<meta http-equiv=\"Imagetoolbar\" content=\"no\" />"+
 	//"<meta name=\"viewport\" content=\"user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width\" />"+
 	"<link rel=\"stylesheet\" href=\"http://clien.career.co.kr/cs2/style.css?v=20110712\" type=\"text/css\" />"+	
 	//"<script type='text/javascript' src='http://ad.clien.net/ad/www/delivery/spcjs.php?id=1&amp;blockcampaign=1&amp;charset=UTF-8'></script>"+
-	"</head> <html><body>"+
+	"</head> <html><body topmargin=\"0\" leftmargin=\"0\">"+
 	"<style>"+ 
 	".resContents      img { max-width:280; width: expression(this.width > 280 ? 280: true); }"+
 	".commentContents  img { max-width:280; width: expression(this.width > 280 ? 280: true); }"+
-	//".resContents      { width: \"100%\"; }"+
-	//".commentContents  { width: \"100%\"; }"+
 	"</style>";
+	//*/
+	//String headtag ="<html><body>";
 	String endtag = " <끝> </body></html>";
+	//String endtag = "</body></html>";
+	String testhtml = "<html><body>"+
+	"<TEST>"+
+	"</body></html>";
 	
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	
@@ -104,6 +111,8 @@ public class ContentsActivity extends Activity {
         
         webView = (WebView)this.findViewById(R.id.webview);
         //webView.setBackgroundColor(Color.BLACK);
+        webView.getSettings().setPluginsEnabled(true);
+        //webView.getSettings().setLoadsImagesAutomatically(true);	
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
@@ -157,6 +166,7 @@ public class ContentsActivity extends Activity {
 		Source source = new Source(new URL(intent_link));
 		
 		source.fullSequentialParse();
+		
 		//Title
 		List<Element> h3tags = source.getAllElements(HTMLElementName.H3);
 		Log.d(TAG,"h3tags.size : "+h3tags.size());
@@ -187,7 +197,7 @@ public class ContentsActivity extends Activity {
 
 			Element contentElement = (Element) contenttags.get(i);
 			String cStr = contentElement.toString();
-			Log.d("contenttags",i + " : cStr : "+cStr);
+			//Log.d("contenttags",i + " : cStr : "+cStr);
 			content_str += cStr;
 		}
 		
@@ -204,23 +214,23 @@ public class ContentsActivity extends Activity {
 		
 		content_str = content_str.replaceAll("<div class=\"signature\"","<!-- <div class=\"signature\"");
 		content_str = content_str.replaceAll("</dd></dl></div>","</dd></dl></div> -->");
-		//content_str = content_str.replaceAll("<div class=\"ccl\"><a rel=\"(.*?)\" href=\"(.*?)\" title=\"(.*?)\" target=_blank><img src=\"(.*?)\"><img src=\"(.*?)\"><img src=\"(.*?)\"></a></div> ","");
 		content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
 		//content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
-		//content_str = content_str.replaceAll("<div class=\"ccl\"> (.*?) </div>","");
-		//content_str = content_str.replaceAll("<div class=\"ccl\">","");
-		//content_str = content_str.replaceAll("/cs2/img/signature.gif","http://clien.career.co.kr/cs2/img/signature.gif");
 		
+		content_str = content_str.replaceAll("%","%25");
 		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
-		//Log.d("total",content_str);
+		Log.d("content_str",content_str);
 		
+		reply_str = reply_str.replaceAll("%","%25");
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
 		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
 		reply_str = reply_str.replaceAll("</textarea>(.*?)</div>","</textarea></div>");
 		Log.d("replytags",reply_str);
 		content_str += reply_str;		
 		//Log.d("total",content_str);
+		
+		
 		
 		//author
 		List<Element> divtags = source.getAllElements(HTMLElementName.DIV);
@@ -587,6 +597,7 @@ public class ContentsActivity extends Activity {
 	
 	private void setLayout()
 	{
+		String html_str;
 		textTitle.setText(contentitem._Title);
 		textId.setText(contentitem._Id);
 		textDate.setText(contentitem._Date);
@@ -594,13 +605,31 @@ public class ContentsActivity extends Activity {
 		//textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setVerticalScrollBarEnabled(false);
+		html_str = headtag+contentitem._Contents+endtag;
 		try {
-			webView.loadData(headtag
-				+contentitem._Contents+endtag, "text/html", "utf-8");
+			webView.loadData(html_str, "text/html", "utf-8");
 		} catch(Exception e)
 		{
 			e.printStackTrace();
 		}
+		
+		//-------------------------------------------------------------------------------------------------------//
+		///*
+		FileOutputStream fileout = null;
+		try {
+			fileout = new FileOutputStream(new File(
+			        Environment.getExternalStorageDirectory()
+			                        .getAbsolutePath()
+			                        + "/test.html"));
+			fileout.write(html_str.getBytes());
+			fileout.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//*/
+		//-------------------------------------------------------------------------------------------------------//
 	}
     
     private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	
