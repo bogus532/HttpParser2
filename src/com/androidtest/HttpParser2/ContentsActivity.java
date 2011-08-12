@@ -2,7 +2,6 @@ package com.androidtest.HttpParser2;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,7 +14,6 @@ import java.util.List;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
-import net.htmlparser.jericho.HTMLElements;
 import net.htmlparser.jericho.Source;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -31,11 +29,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +43,8 @@ public class ContentsActivity extends Activity {
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
 	String address_replace_data = "http://clien.career.co.kr/cs2/data";
+	
+	private final ImageDownloader imageDownloader = new ImageDownloader();
 	
 	//int lcd_width = 480;
 	
@@ -97,6 +97,9 @@ public class ContentsActivity extends Activity {
 	
 	String endtag = " <> </body></html>";
 	
+	String imgstarttag = "<html><body><p><img src=\"";
+	String imgendtag = "\" width='46' height='16' align='right' border='0'></p></body></html>";
+	
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	
 	ContentsItem contentitem;
@@ -114,6 +117,8 @@ public class ContentsActivity extends Activity {
 	TextView textContents;
 	WebView webView;
 	
+	ImageView imgView;
+	
 	Display display;
 	
 	@Override
@@ -124,9 +129,6 @@ public class ContentsActivity extends Activity {
         textTitle = (TextView)this.findViewById(R.id.textTitle);
         textId = (TextView)this.findViewById(R.id.textId);
         textDate = (TextView)this.findViewById(R.id.textDate);
-        textContents = (TextView)this.findViewById(R.id.textContents);
-        textContents.setAutoLinkMask(Linkify.WEB_URLS);
-        textContents.setLinksClickable(true);
         
         textTitle.setBackgroundColor(Color.WHITE);
         textTitle.setTextColor(Color.BLACK);
@@ -137,9 +139,6 @@ public class ContentsActivity extends Activity {
         textDate.setBackgroundColor(Color.WHITE);
         textDate.setTextColor(Color.BLACK);
         
-        textContents.setBackgroundColor(Color.WHITE);
-        textContents.setTextColor(Color.BLACK);        
-        
         webView = (WebView)this.findViewById(R.id.webview);
         //webView.setBackgroundColor(Color.BLACK);
         webView.getSettings().setPluginsEnabled(true);
@@ -147,6 +146,8 @@ public class ContentsActivity extends Activity {
         //below two line, web 화면 전체가 디바이스 엘시디 사이즈에 최적화
         //webView.getSettings().setUseWideViewPort(true);
         //webView.setInitialScale(1);
+        
+        imgView = (ImageView)this.findViewById(R.id.imgview);
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
@@ -190,6 +191,7 @@ public class ContentsActivity extends Activity {
 	//by webview & jericho parser
 	private int buildTagList2() throws MalformedURLException,IOException {
 		String title = "",author = "";
+		String author_link = "";
 		String content_str = "";
 		String reply_str = "";
 		String strDate = "";
@@ -233,7 +235,7 @@ public class ContentsActivity extends Activity {
 
 			Element contentElement = (Element) contenttags.get(i);
 			String cStr = contentElement.toString();
-			//Log.d("contenttags",i + " : cStr : "+cStr);
+
 			if(cStr.contains("<object"))
 			{
 				cStr = cStr.replaceAll("height=\"[0-9]*\"","height=\"150\"");
@@ -243,7 +245,6 @@ public class ContentsActivity extends Activity {
 		}
 		
 		//contents - reply
-		
 		List<Element> replytags = source.getAllElementsByClass("reply_base");
 		
 		for (int i = 0; i < replytags.size(); i++) {
@@ -264,7 +265,7 @@ public class ContentsActivity extends Activity {
 		content_str = content_str.replaceAll("%","%25");
 		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
-		Log.d("content_str",content_str);
+		//Log.d("content_str",content_str);
 		
 		reply_str = reply_str.replaceAll("%","%25");
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
@@ -297,7 +298,25 @@ public class ContentsActivity extends Activity {
 		
 		if(author.equals("님"))
 		{
-			//Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+			author = "";
+			List<Element> viewheadtags = source.getAllElementsByClass("view_head");
+			for (int i = 0; i < viewheadtags.size(); i++) {
+				Element viewheadElement = (Element) viewheadtags.get(i);
+				List<Element> imgtags = viewheadElement.getAllElements(HTMLElementName.IMG);
+				for(int x = 0; x < imgtags.size();x++)
+				{
+					Element imgElement = (Element) imgtags.get(x);
+					author_link = imgElement.getAttributeValue("src");
+					if(author_link != null)
+					{
+						author_link = author_link.replace("../", "");
+						author_link = address_replace+author_link;
+					}
+					Log.d(TAG,"author link : "+author_link);
+				}
+				
+			}
+			
 		}
 		
 		//Date
@@ -332,7 +351,7 @@ public class ContentsActivity extends Activity {
 		}
 
 		
-		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str);
+		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str,author_link);
 		
 		setContentsItem(ci);
 		//Log.d(TAG,"Last Title : "+content_str);
@@ -456,48 +475,6 @@ public class ContentsActivity extends Activity {
 			
 		}
 
-		/*
-		
-		List<Element> spantags = source.getAllElementsByClass("view_content");
-		
-		Log.d(TAG," - SPAN Tag size : "+spantags.size());
-
-		for(int x = 0; x < spantags.size();x++)
-		{
-			Element spanElement = (Element) spantags.get(x);
-			String spanStr = spanElement.toString();
-			Log.d(TAG,x+" - spanStr : "+spanStr);
-						
-			content_str += spanElement.getContent().toString();
-			
-			content_str = content_str.replaceAll("<span (.*?)>","");
-			content_str = content_str.replaceAll("<div (.*?)>","");
-			content_str = content_str.replaceAll("<p (.*?)>","");
-			content_str = content_str.replaceAll("<font (.*?)>","");
-			content_str = content_str.replaceAll("<div>","");
-			content_str = content_str.replaceAll("</div>","");
-			content_str = content_str.replaceAll("</span>","");
-			content_str = content_str.replaceAll("</font>","");
-			content_str = content_str.replaceAll("<p>","");
-			content_str = content_str.replaceAll("&nbsp;","");
-			content_str = content_str.replaceAll("</p>","\n");
-			content_str = content_str.replaceAll("<br />","");
-			content_str = content_str.replaceAll("<a (.*?)>","");
-			content_str = content_str.replaceAll("<a href=\"(.*?)\">","");
-			content_str = content_str.replaceAll("<A HREF=\"(.*?)\" TARGET='(.*?)'>","");
-			content_str = content_str.replaceAll("</A>","");
-			content_str = content_str.replaceAll("</a>","");
-			content_str = content_str.replaceAll("<img (.*?)>","");
-			content_str = content_str.replaceAll("&gt;",">");
-			content_str = content_str.replaceAll("<!-- (.*?) -->","");
-				
-				//content_str += spanElement.getTextExtractor().toString();
-				
-			//	x = spantags.size();
-			
-		}
-		//*/
-		
 		//reply
 		List<Element> replytags = source.getAllElementsByClass("reply_base");
 		
@@ -534,7 +511,7 @@ public class ContentsActivity extends Activity {
 		
 		if(author.equals("님"))
 		{
-			Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+			//Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		}
 		
 		//Date
@@ -568,9 +545,9 @@ public class ContentsActivity extends Activity {
 
 		}
 		
-		ContentsItem ci  = new ContentsItem(title,author,strDate,content_str);
+		//ContentsItem ci  = new ContentsItem(title,author,strDate,content_str,);
 		
-		setContentsItem(ci);
+		//setContentsItem(ci);
 		//Log.d(TAG,"Last Title : "+content_str);
 		Log.d(TAG,"result : "+result);
 		return result;
@@ -642,12 +619,17 @@ public class ContentsActivity extends Activity {
 		textTitle.setText(contentitem._Title);
 		textId.setText(contentitem._Id);
 		textDate.setText(contentitem._Date);
-		//textContents.setText(contentitem._Contents);
-		//textContents.setText(Html.fromHtml(contentitem._Contents,new ImageGetter(), null));
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setVerticalScrollBarEnabled(false);
 		html_str = headtag+contentitem._Contents+endtag;
 		try {
+			if(contentitem._Id_link != null)
+			{
+				//imgwebView.loadData(imgstarttag+contentitem._Id_link+imgendtag,"text/html", "utf-8");
+				imgView.setImageBitmap(null);
+				imageDownloader.download(contentitem._Id_link, imgView);
+			}
+
 			webView.loadData(html_str, "text/html", "utf-8");
 		} catch(Exception e)
 		{
