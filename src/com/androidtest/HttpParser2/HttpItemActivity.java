@@ -155,7 +155,7 @@ public class HttpItemActivity extends Activity {
 		String strDate = null,strImg = null,strReturnURL = null;
 		Date date = null;
 		int result=0;
-		Log.d(TAG,"buildTagList");
+		//Log.d(TAG,"buildTagList");
 		Source source = new Source(new URL(intent_link));
 		String temp[]= new String[6];
 
@@ -208,7 +208,7 @@ public class HttpItemActivity extends Activity {
 					{
 						link = e_link.getAttributeValue("href");
 					}
-					Log.d(TAG,x+" : "+z + " Link string : " + link);
+					//Log.d(TAG,x+" : "+z + " Link string : " + link);
 				}
 				
 				if(link != null)

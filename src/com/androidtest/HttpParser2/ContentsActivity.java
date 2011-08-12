@@ -15,6 +15,7 @@ import java.util.List;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.HTMLElements;
 import net.htmlparser.jericho.Source;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -44,27 +45,57 @@ public class ContentsActivity extends Activity {
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
 	String address_replace_data = "http://clien.career.co.kr/cs2/data";
-	///*
+	
+	//int lcd_width = 480;
+	
 	String headtag ="<html xmlns=\"http://www.w3.org/1999/xhtml\">"+
 	"<head>"+
 	"<link href=\"http://clien.career.co.kr/cs2/css/style.css?v=20110712\" rel=\"stylesheet\" type=\"text/css\" />"+
 	"<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>"+ 
 	"<meta http-equiv=\"Imagetoolbar\" content=\"no\" />"+
-	//"<meta name=\"viewport\" content=\"user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width\" />"+
+	"<meta name=\"viewport\" content=\"user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width\" />"+
 	"<link rel=\"stylesheet\" href=\"http://clien.career.co.kr/cs2/style.css?v=20110712\" type=\"text/css\" />"+	
 	//"<script type='text/javascript' src='http://ad.clien.net/ad/www/delivery/spcjs.php?id=1&amp;blockcampaign=1&amp;charset=UTF-8'></script>"+
 	"</head> <html><body topmargin=\"0\" leftmargin=\"0\">"+
 	"<style>"+ 
 	".resContents      img { max-width:280; width: expression(this.width > 280 ? 280: true); }"+
+	//".resContents      img { max-width:"+Integer.toString(lcd_width)+"; width: expression(this.width > "+Integer.toString(lcd_width)+" ? "+Integer.toString(lcd_width)+": true); }"+
 	".commentContents  img { max-width:280; width: expression(this.width > 280 ? 280: true); }"+
+	"</style>"+	
+	"<style type=\"text/css\">"+
+	".board_main{clear:both;padding-top:5px;}"+
+	".view_content{clear:both;font:12px \"굴림\",Gulim;line-height:19px;padding:0px 4px 0px 5px;word-break:break-all;}"+
+	".view_content_btn{text-align:right;margin-bottom:10px;}"+
+	".view_content_btn img{display:inline !important;}"+
+	".view_content_btn2{margin:0 auto;width:300px;overflow:hidden;}"+
+	".view_content_btn3{margin:0 auto;width:300px;}"+
+	".view_content_btn3 li{float:left;padding-right:6px;}"+
+	".view_content_btn3 img{display:inline !important;}"+
+	".view_content_btn2 li{float:left;padding-right:6px;}"+
+	".ad_area1{clear:both;text-align:center;padding:20px 0 20px 0;font-weight:normal;}"+
+	".reply_head{background-color:#f3f3f3;height:16px;padding:4px 14px 4px 9px;line-height:16px;margin-top:20px;}"+
+	".repla_head a{color:#374273 !important;text-decoration:none !important;}"+
+	".reply_head1{background-color:#f3f3f3;height:16px;padding:4px 14px 4px 9px;line-height:16px;margin-top:20px;}"+
+	".reply_info{float:left;color:#898989;font-size:11px;}"+
+	".reply_info .user_id{color:#374273;padding-right:2px;}"+
+	".reply_info .block{font-size:12px;padding:0 5px 0 13px;_line-height:19px;}"+
+	".reply_head li{float:left;}"+
+	".reply_btn{float:right;}"+
+	".reply_btn li{padding-left:3px;}"+
+	".reply_btn img{vertical-align:top;padding-top:1px;}"+
+	".reply_btn .report{padding:3px 0 0 7px;}"+
+	".reply_btn .ip{color:#b2b2b2;padding-right:7px;font-size:12px;font-weight:normal;}"+
+	".reply_content{clear:both;word-break:break-all;padding:4px 0 0px 9px;margin-bottom:0px;font:12px \"굴림\",Gulim,AppleGothic;line-height:19px;color:#000;font-weight:normal;}"+
+	".ccl{width:280px;text-align:right;margin:0 auto;}"+
+	".ccl img{display:inline !important;}"+
+	".signature{color:#667e99;margin-top:20px;}"+
+	".signature img{display:inline !important;}"+
+	".signature dl{width:280px;overflow:hidden;margin:0 auto;}"+
+	".signature dt{border-bottom:2px solid #c8d0d9;height:18px;overflow:hidden;}"+
+	".signature dd{padding:7px 0 0 20px;}"+
 	"</style>";
-	//*/
-	//String headtag ="<html><body>";
-	String endtag = " <끝> </body></html>";
-	//String endtag = "</body></html>";
-	String testhtml = "<html><body>"+
-	"<TEST>"+
-	"</body></html>";
+	
+	String endtag = " <> </body></html>";
 	
 	BitmapFactory.Options options = new BitmapFactory.Options();
 	
@@ -113,6 +144,9 @@ public class ContentsActivity extends Activity {
         //webView.setBackgroundColor(Color.BLACK);
         webView.getSettings().setPluginsEnabled(true);
         //webView.getSettings().setLoadsImagesAutomatically(true);	
+        //below two line, web 화면 전체가 디바이스 엘시디 사이즈에 최적화
+        //webView.getSettings().setUseWideViewPort(true);
+        //webView.setInitialScale(1);
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
@@ -124,6 +158,8 @@ public class ContentsActivity extends Activity {
         Context context = getApplicationContext();
         display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         
+        Log.d(TAG,"LCD Width : "+display.getWidth()+" , Height : "+display.getHeight());
+        //lcd_width = display.getWidth();
         Log.d(TAG,"Link URL : "+intent_link);
         
         /*
@@ -198,10 +234,16 @@ public class ContentsActivity extends Activity {
 			Element contentElement = (Element) contenttags.get(i);
 			String cStr = contentElement.toString();
 			//Log.d("contenttags",i + " : cStr : "+cStr);
+			if(cStr.contains("<object"))
+			{
+				cStr = cStr.replaceAll("height=\"[0-9]*\"","height=\"150\"");
+				cStr = cStr.replaceAll("width=\"[0-9]*\"","width=\"200\"");
+			}
 			content_str += cStr;
 		}
 		
 		//contents - reply
+		
 		List<Element> replytags = source.getAllElementsByClass("reply_base");
 		
 		for (int i = 0; i < replytags.size(); i++) {
@@ -217,6 +259,8 @@ public class ContentsActivity extends Activity {
 		content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
 		//content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
 		
+		content_str = content_str.replaceAll("<div class=\"ExifInfo\" style=\"width:[0-9]*px;\">"
+				,"<div class=\"ExifInfo\" style=\"width:280px;\">");
 		content_str = content_str.replaceAll("%","%25");
 		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
@@ -226,12 +270,9 @@ public class ContentsActivity extends Activity {
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
 		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
 		reply_str = reply_str.replaceAll("</textarea>(.*?)</div>","</textarea></div>");
-		Log.d("replytags",reply_str);
+		//Log.d("replytags",reply_str);
 		content_str += reply_str;		
-		//Log.d("total",content_str);
-		
-		
-		
+				
 		//author
 		List<Element> divtags = source.getAllElements(HTMLElementName.DIV);
 		for (int i = 0; i < divtags.size(); i++) {
@@ -614,7 +655,7 @@ public class ContentsActivity extends Activity {
 		}
 		
 		//-------------------------------------------------------------------------------------------------------//
-		///*
+		/*
 		FileOutputStream fileout = null;
 		try {
 			fileout = new FileOutputStream(new File(
