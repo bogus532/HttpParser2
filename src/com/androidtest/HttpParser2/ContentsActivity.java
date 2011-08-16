@@ -272,7 +272,7 @@ public class ContentsActivity extends Activity {
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
 		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
 		reply_str = reply_str.replaceAll("</textarea>(.*?)</div>","</textarea></div>");
-		Log.d("replytags",reply_str);
+		//Log.d("replytags",reply_str);
 		content_str += reply_str;		
 				
 		//author

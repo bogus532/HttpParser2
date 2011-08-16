@@ -26,7 +26,6 @@
 		android:orientation="horizontal">
 		<TextView 
 	    android:id="@+id/textDate"
-	    android:text="Loading....."
 	    android:layout_width="wrap_content" 
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="left"></TextView>
@@ -37,7 +36,6 @@
 		
 	    <TextView
 	    android:id="@+id/textId" 
-	    android:text="Loading....."
 	    android:layout_width="fill_parent" 
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="right"

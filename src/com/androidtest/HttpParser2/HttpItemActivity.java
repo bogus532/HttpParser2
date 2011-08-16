@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -19,16 +18,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -51,6 +47,8 @@ public class HttpItemActivity extends Activity {
 	String intent_title;
 	
 	int page = 1;
+	int scroll_index = 0;
+	int scroll_skip_index = 0;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -129,6 +127,7 @@ public class HttpItemActivity extends Activity {
  				{
  					page++;
  					intent_link = originalLink + "&page="+page;
+ 					scroll_index = total_index;
  					setProgressDlg();
  					new parseHtml().execute();
  					Log.d("setOnItemClickListener","page : "+page);
@@ -158,8 +157,7 @@ public class HttpItemActivity extends Activity {
         
         aa = new HttpItemAdapter(this,R.layout.row,HttpItemArray);
 		        
-        httpItemListView.setAdapter(aa);
-		
+        httpItemListView.setAdapter(aa);		
     }
     
     @Override
@@ -181,7 +179,7 @@ public class HttpItemActivity extends Activity {
 			new parseHtml().execute();
 		}	
 	}
-
+ 
 	@Override
 	public void onScrollStateChanged(AbsListView view, int scrollState)
 	{
@@ -215,6 +213,7 @@ public class HttpItemActivity extends Activity {
 		String strDate = null,strImg = null,strReturnURL = null;
 		Date date = null;
 		int result=0;
+		int skip_count = 0;
 		//Log.d(TAG,"buildTagList");
 		Source source = new Source(new URL(intent_link));
 		String temp[]= new String[6];
@@ -227,14 +226,19 @@ public class HttpItemActivity extends Activity {
 
 			Element trElement = (Element) tbodytags.get(i);
 			List<Element> trList = trElement.getAllElements(HTMLElementName.TR);
+			List<Element> postnoticeList = trElement.getAllElementsByClass("post_notice");
 
 			//Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
+			if(page > 1)
+			{
+				skip_count = postnoticeList.size();
+				scroll_skip_index = postnoticeList.size();
+			}
 			
-			for(int x = 0; x < trList.size(); x++)
+			for(int x = skip_count; x < trList.size(); x++)
 			{
 				Element tdElement = (Element) trList.get(x);
 				List<Element> tdList = tdElement.getAllElements(HTMLElementName.TD);
-				
 				
 				for(int y=0; y < tdList.size();y++)
 				{
@@ -387,6 +391,7 @@ public class HttpItemActivity extends Activity {
 			if(result == 1)
 			{
 				httpItemListView.setAdapter(aa);
+				httpItemListView.setSelection(scroll_index-scroll_skip_index);
 				updateListView();
 			}
 			else if(result > 1)
