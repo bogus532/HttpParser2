@@ -2,6 +2,7 @@ package com.androidtest.HttpParser2;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -85,7 +86,7 @@ public class ContentsActivity extends Activity {
 	".reply_btn img{vertical-align:top;padding-top:1px;}"+
 	".reply_btn .report{padding:3px 0 0 7px;}"+
 	".reply_btn .ip{color:#b2b2b2;padding-right:7px;font-size:12px;font-weight:normal;}"+
-	".reply_content{clear:both;word-break:break-all;padding:4px 0 0px 9px;margin-bottom:0px;font:12px \"굴림\",Gulim,AppleGothic;line-height:19px;color:#000;font-weight:normal;}"+
+	".reply_content{clear:both;word-break:break-all;padding:4px 4px 0px 9px;margin-bottom:0px;font:12px \"굴림\",Gulim,AppleGothic;line-height:19px;color:#000;font-weight:normal;}"+
 	".ccl{width:280px;text-align:right;margin:0 auto;}"+
 	".ccl img{display:inline !important;}"+
 	".signature{color:#667e99;margin-top:20px;}"+
@@ -95,7 +96,7 @@ public class ContentsActivity extends Activity {
 	".signature dd{padding:7px 0 0 20px;}"+
 	"</style>";
 	
-	String endtag = " <> </body></html>";
+	String endtag = " </body></html>";
 	
 	String imgstarttag = "<html><body><p><img src=\"";
 	String imgendtag = "\" width='46' height='16' align='right' border='0'></p></body></html>";
@@ -257,7 +258,7 @@ public class ContentsActivity extends Activity {
 		
 		content_str = content_str.replaceAll("<div class=\"signature\"","<!-- <div class=\"signature\"");
 		content_str = content_str.replaceAll("</dd></dl></div>","</dd></dl></div> -->");
-		content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
+		//content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
 		//content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
 		
 		content_str = content_str.replaceAll("<div class=\"ExifInfo\" style=\"width:[0-9]*px;\">"
@@ -271,7 +272,7 @@ public class ContentsActivity extends Activity {
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
 		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
 		reply_str = reply_str.replaceAll("</textarea>(.*?)</div>","</textarea></div>");
-		//Log.d("replytags",reply_str);
+		Log.d("replytags",reply_str);
 		content_str += reply_str;		
 				
 		//author

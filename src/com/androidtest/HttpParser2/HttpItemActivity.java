@@ -16,15 +16,19 @@ import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -39,10 +43,14 @@ public class HttpItemActivity extends Activity {
 	HttpItemAdapter aa;
 	ArrayList<HttpItem> HttpItemArray = new ArrayList<HttpItem>();
 	HttpItem selectedhttpitem;
+	private LayoutInflater mInflater;
 	
 	Intent intent;
 	String intent_link;
+	String originalLink;
 	String intent_title;
+	
+	int page = 1;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -51,7 +59,8 @@ public class HttpItemActivity extends Activity {
         setContentView(R.layout.httpitemactivity);
         
         intent = getIntent();
-        intent_link = intent.getExtras().getString("Link").toString();
+        originalLink = intent.getExtras().getString("Link").toString();
+        intent_link = originalLink;
         intent_title = intent.getExtras().getString("Title").toString();
         
         setTitle(intent_title);
@@ -60,6 +69,10 @@ public class HttpItemActivity extends Activity {
         
         httpItemListView = (ListView)this.findViewById(R.id.httpItemListView);
         
+        mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        httpItemListView.addFooterView(mInflater.inflate(R.layout.articlefooter, null));
+        //httpItemListView.setOnScrollListener(this);
+        
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
         httpItemListView.setOnItemClickListener(new OnItemClickListener () {
@@ -67,10 +80,23 @@ public class HttpItemActivity extends Activity {
  			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int index,
 					long arg3) {
-				
- 				selectedhttpitem = HttpItemArray.get(index);
+ 				
+ 				int total_index = httpItemListView.getCount();
+ 				boolean bnextPage = false;
+ 				
+ 				Log.d("setOnItemClickListener","index : "+index+", total : "+total_index);
+ 				
+ 				if(index == total_index -1 || index > total_index)
+ 				{
+ 					selectedhttpitem = null;
+ 					bnextPage = true;
+ 				}
+ 				else
+ 				{
+ 					selectedhttpitem = HttpItemArray.get(index);
+ 				}
   
- 				if(selectedhttpitem != null)
+ 				if(selectedhttpitem != null && bnextPage == false)
  				{
  					/*
  					String uridata = selectedhttpitem.getLink();
@@ -99,6 +125,19 @@ public class HttpItemActivity extends Activity {
  					startActivity(intent);
 	 				
   				}
+ 				else if(selectedhttpitem == null && bnextPage == true)
+ 				{
+ 					page++;
+ 					intent_link = originalLink + "&page="+page;
+ 					setProgressDlg();
+ 					new parseHtml().execute();
+ 					Log.d("setOnItemClickListener","page : "+page);
+ 				}
+ 				else
+ 				{
+ 					Toast.makeText(HttpItemActivity.this, R.string.data_null, Toast.LENGTH_SHORT).show();
+					return;
+ 				}
 			}
         });
        
@@ -127,6 +166,27 @@ public class HttpItemActivity extends Activity {
 	public void onBackPressed() {
     	super.onBackPressed();
 	}
+    
+    /*
+    @Override
+	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+	{
+		int count = totalItemCount - visibleItemCount;
+		
+		Log.d(TAG,"onScroll - count : "+count+", visible : "+visibleItemCount+", total : "+totalItemCount);
+
+		if(firstVisibleItem >= count && totalItemCount != 0)
+		{
+			intent_link = intent_link + "&page=2";
+			new parseHtml().execute();
+		}	
+	}
+
+	@Override
+	public void onScrollStateChanged(AbsListView view, int scrollState)
+	{
+	}
+	*/
     
     private void addHttpItemToArray(HttpItem _httpitem)
     {

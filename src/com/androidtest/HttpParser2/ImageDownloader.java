@@ -198,7 +198,7 @@ public class ImageDownloader {
                     // Bug on slow connections, fixed in future release.
                     //return BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
                     Bitmap temp = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
-                    Bitmap resized = Bitmap.createScaledBitmap(temp, 40, 10, true);
+                    Bitmap resized = Bitmap.createScaledBitmap(temp, 40, 15, true);
                     return resized;
                 } finally {
                     if (inputStream != null) {

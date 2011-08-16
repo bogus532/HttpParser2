@@ -16,6 +16,8 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -27,6 +29,9 @@ public class HttpParser2 extends Activity {
 	private static final String TAG = "HttpParser2";
 	String address = "http://clien.career.co.kr/cs2/bbs/board.php?bo_table=news";
 	String address_replace = "http://clien.career.co.kr/cs2/";
+	
+	private static final int MENU_UPDATE = Menu.FIRST;
+	private static final int MENU_PREFERENCES = Menu.FIRST+1;
 	
 	ListView ArticleItemListView;
 	
@@ -112,6 +117,33 @@ public class HttpParser2 extends Activity {
         
  		ArticleItemListView.setAdapter(ai);
     }
+    
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    super.onCreateOptionsMenu(menu);
+
+	    menu.add(0, MENU_UPDATE, Menu.NONE, "Update");
+	    menu.add(0, MENU_PREFERENCES, Menu.NONE,"Pref.");
+	    return true;
+	}
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    super.onOptionsItemSelected(item);
+
+	    switch (item.getItemId()) {
+	        case (MENU_UPDATE): {
+	        	
+	            return true;
+	        }
+	        case (MENU_PREFERENCES) : {
+	        	
+	            return true;
+	        }
+    
+	    }
+	    return false;
+	}
     
     @Override
 	public void onBackPressed() {
