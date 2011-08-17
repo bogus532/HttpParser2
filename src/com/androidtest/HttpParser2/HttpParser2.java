@@ -30,7 +30,7 @@ public class HttpParser2 extends Activity {
 	String address = "http://clien.career.co.kr/cs2/bbs/board.php?bo_table=news";
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	
-	private static final int MENU_UPDATE = Menu.FIRST;
+	private static final int MENU_LOGIN = Menu.FIRST;
 	private static final int MENU_PREFERENCES = Menu.FIRST+1;
 	
 	ListView ArticleItemListView;
@@ -122,7 +122,7 @@ public class HttpParser2 extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    super.onCreateOptionsMenu(menu);
 
-	    menu.add(0, MENU_UPDATE, Menu.NONE, "Update");
+	    menu.add(0, MENU_LOGIN, Menu.NONE, "Login");
 	    menu.add(0, MENU_PREFERENCES, Menu.NONE,"Pref.");
 	    return true;
 	}
@@ -132,7 +132,7 @@ public class HttpParser2 extends Activity {
 	    super.onOptionsItemSelected(item);
 
 	    switch (item.getItemId()) {
-	        case (MENU_UPDATE): {
+	        case (MENU_LOGIN): {
 	        	
 	            return true;
 	        }

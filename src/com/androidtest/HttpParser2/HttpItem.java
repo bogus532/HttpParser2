@@ -10,14 +10,16 @@ public class HttpItem {
 	private String author;
 	private Date date;
 	private String giflink;
+	private int font_color;
 		
-	public HttpItem(String _title,String _link,Date _date,String _author,String _giflink)
+	public HttpItem(String _title,String _link,Date _date,String _author,String _giflink,int _font_color)
 	{
 		title = _title;
 		link = _link;
 		author = _author;
 		date = _date;
 		giflink = _giflink;
+		font_color = _font_color;
 	}
 	
 	public String getTitle()
@@ -43,6 +45,11 @@ public class HttpItem {
 	public String getGiflink()
 	{
 		return giflink;
+	}
+	
+	public int getFontColor()
+	{
+		return font_color;
 	}
 	
 	public String getDateToString()

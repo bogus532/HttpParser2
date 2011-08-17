@@ -67,17 +67,41 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                     //tvContents.setLinksClickable(true);
     				
                     if (tvContents != null){
-                    	tvContents.setText(b.getTitle());                           
+                    	tvContents.setText(b.getTitle());  
+                    	if(b.getFontColor() == 1)
+                    	{
+                    		tvContents.setBackgroundColor(Color.DKGRAY);
+                    	}
+                    	else
+                    	{
+                    		tvContents.setBackgroundColor(Color.BLACK);
+                    	}
                     }
                     
                     if(tvDate != null){
                     	tvDate.setTextColor(Color.GRAY);
                     	tvDate.setText(b.getDateToString());
+                    	if(b.getFontColor() == 1)
+                    	{
+                    		tvDate.setBackgroundColor(Color.DKGRAY);
+                    	}
+                    	else
+                    	{
+                    		tvDate.setBackgroundColor(Color.BLACK);
+                    	}
                     }
                     
                     if(tvAuthor != null){
                     	tvAuthor.setTextColor(Color.GRAY);
                     	tvAuthor.setText(b.getAuthor());
+                    	if(b.getFontColor() == 1)
+                    	{
+                    		tvAuthor.setBackgroundColor(Color.DKGRAY);
+                    	}
+                    	else
+                    	{
+                    		tvAuthor.setBackgroundColor(Color.BLACK);
+                    	}
                     }
                     
                     if(ivGiflink != null)
@@ -95,6 +119,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
 							
                     	}
                     }
+                    
             }
             return v;
     }

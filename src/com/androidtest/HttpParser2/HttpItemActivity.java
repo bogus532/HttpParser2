@@ -22,6 +22,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,6 +35,8 @@ public class HttpItemActivity extends Activity {
 	
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	
+	private static final int MENU_UPDATE = Menu.FIRST;
+			
 	ListView httpItemListView;
 	ProgressDialog mDialog;
 	
@@ -49,6 +53,7 @@ public class HttpItemActivity extends Activity {
 	int page = 1;
 	int scroll_index = 0;
 	int scroll_skip_index = 0;
+	boolean bUpdate = false;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -165,6 +170,33 @@ public class HttpItemActivity extends Activity {
     	super.onBackPressed();
 	}
     
+    @Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    super.onCreateOptionsMenu(menu);
+
+	    menu.add(0, MENU_UPDATE, Menu.NONE, "Update");
+
+	    return true;
+	}
+    
+    @Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    super.onOptionsItemSelected(item);
+
+	    switch (item.getItemId()) {
+	        case (MENU_UPDATE): {
+	        	
+	        	page = 1;
+	        	bUpdate = true;
+	        	setProgressDlg();
+	    		new parseHtml().execute();
+	    		
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+    
     /*
     @Override
 	public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
@@ -214,6 +246,7 @@ public class HttpItemActivity extends Activity {
 		Date date = null;
 		int result=0;
 		int skip_count = 0;
+		int post_notice_color = 0;
 		//Log.d(TAG,"buildTagList");
 		Source source = new Source(new URL(intent_link));
 		String temp[]= new String[6];
@@ -229,16 +262,27 @@ public class HttpItemActivity extends Activity {
 			List<Element> postnoticeList = trElement.getAllElementsByClass("post_notice");
 
 			//Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
+			Log.d(TAG,"post notice index: "+postnoticeList.size());
 			if(page > 1)
 			{
 				skip_count = postnoticeList.size();
 				scroll_skip_index = postnoticeList.size();
 			}
-			
+						
 			for(int x = skip_count; x < trList.size(); x++)
 			{
 				Element tdElement = (Element) trList.get(x);
 				List<Element> tdList = tdElement.getAllElements(HTMLElementName.TD);
+				
+				if(page == 1 && x < postnoticeList.size())
+				{
+					post_notice_color = 1;
+					Log.d(TAG,i+" : "+x+" - post notice ");
+				}
+				else
+				{
+					post_notice_color = 0;
+				}
 				
 				for(int y=0; y < tdList.size();y++)
 				{
@@ -329,7 +373,7 @@ public class HttpItemActivity extends Activity {
 
 				if (trList != null) {
 
-					HttpItem h = new HttpItem(title, link, date, author,strReturnURL);
+					HttpItem h = new HttpItem(title, link, date, author,strReturnURL,post_notice_color);
 					addHttpItemToArray(h);
 				}
 			}
@@ -347,6 +391,11 @@ public class HttpItemActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
+			if(bUpdate == true)
+			{
+				intent_link = originalLink;
+				HttpItemArray.clear();
+			}
 			mDialog.show();
 		}
 
@@ -391,7 +440,14 @@ public class HttpItemActivity extends Activity {
 			if(result == 1)
 			{
 				httpItemListView.setAdapter(aa);
-				httpItemListView.setSelection(scroll_index-scroll_skip_index);
+				if(bUpdate == true)
+				{
+					httpItemListView.setSelection(0);
+				}
+				else
+				{
+					httpItemListView.setSelection(scroll_index-scroll_skip_index);
+				}
 				updateListView();
 			}
 			else if(result > 1)
@@ -399,6 +455,7 @@ public class HttpItemActivity extends Activity {
 				Toast.makeText(HttpItemActivity.this, "Error", Toast.LENGTH_SHORT).show();
     			onBackPressed();
 			}
+			bUpdate = false;
 			mDialog.dismiss(); 
     	}
   
