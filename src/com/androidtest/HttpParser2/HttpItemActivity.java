@@ -101,21 +101,6 @@ public class HttpItemActivity extends Activity {
   
  				if(selectedhttpitem != null && bnextPage == false)
  				{
- 					/*
- 					String uridata = selectedhttpitem.getLink();
- 					
- 					if(uridata == null)
- 					{
- 						Toast.makeText(HttpItemActivity.this, R.string.data_null, Toast.LENGTH_SHORT).show();
- 						return;
- 					}
- 					
-  					Log.d(TAG,"Link URL : "+uridata);
- 					
-	 				Uri uri = Uri.parse(uridata);
-	 				Intent intent  = new Intent(Intent.ACTION_VIEW,uri);
-	 				startActivity(intent);
-	 				*/
  					String uridata = selectedhttpitem.getLink();
  					if(uridata == null)
  					{
@@ -262,7 +247,7 @@ public class HttpItemActivity extends Activity {
 			List<Element> postnoticeList = trElement.getAllElementsByClass("post_notice");
 
 			//Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
-			Log.d(TAG,"post notice index: "+postnoticeList.size());
+			//Log.d(TAG,"post notice index: "+postnoticeList.size());
 			if(page > 1)
 			{
 				skip_count = postnoticeList.size();
@@ -273,16 +258,6 @@ public class HttpItemActivity extends Activity {
 			{
 				Element tdElement = (Element) trList.get(x);
 				List<Element> tdList = tdElement.getAllElements(HTMLElementName.TD);
-				
-				if(page == 1 && x < postnoticeList.size())
-				{
-					post_notice_color = 1;
-					Log.d(TAG,i+" : "+x+" - post notice ");
-				}
-				else
-				{
-					post_notice_color = 0;
-				}
 				
 				for(int y=0; y < tdList.size();y++)
 				{
@@ -372,6 +347,15 @@ public class HttpItemActivity extends Activity {
 				}
 
 				if (trList != null) {
+					if(page == 1 && x < postnoticeList.size())
+					{
+						post_notice_color = 1;
+						title = "[공지]"+title;
+					}
+					else
+					{
+						post_notice_color = 0;
+					}
 
 					HttpItem h = new HttpItem(title, link, date, author,strReturnURL,post_notice_color);
 					addHttpItemToArray(h);

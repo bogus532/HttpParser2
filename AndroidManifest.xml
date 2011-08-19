@@ -17,6 +17,7 @@
         <activity android:name="HttpItemActivity"
         android:configChanges="keyboardHidden|orientation"></activity>
         <activity android:name="ContentsActivity"></activity>
+        <activity android:name="imageBulletinActivity"></activity>
 
     </application>
 </manifest>

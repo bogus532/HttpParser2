@@ -50,7 +50,8 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
             }
             HttpItem b = items.get(position);
             if (b != null) {
-            	/*
+            	/* 
+            	    //row.xml
 	            	TextView tvContents = (TextView) v.findViewById(R.id.tvContents);
 	                TextView tvDate = (TextView) v.findViewById(R.id.tvDate);
 	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor);
@@ -61,7 +62,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
 	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor2);
 	                final ImageView ivGiflink = (ImageView) v.findViewById(R.id.ivDec2);
                     
-	                tvContents.setTextSize(15);
+	                tvContents.setTextSize(18);
                     tvContents.setText(this.getItem(position).toString());
                     //tvContents.setAutoLinkMask(Linkify.WEB_URLS);
                     //tvContents.setLinksClickable(true);

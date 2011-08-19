@@ -64,23 +64,8 @@ public class HttpParser2 extends Activity {
 				
  				selectedarticleitem = ArticleItemArray.get(index);
  
- 				if(selectedarticleitem != null)
+ 				if(selectedarticleitem != null && !selectedarticleitem.getTitle().contentEquals("사진게시판"))
  				{
- 					/*
- 					
- 					String uridata = selectedarticleitem.getLink();
- 					if(uridata == null)
- 					{
- 						Toast.makeText(HttpParser2.this, R.string.data_null, Toast.LENGTH_SHORT).show();
- 						return;
- 					}
- 				
- 					Log.d(TAG,"Link URL : "+uridata);
- 					
-	 				Uri uri = Uri.parse(uridata);
-	 				Intent intent  = new Intent(Intent.ACTION_VIEW,uri);
-	 				startActivity(intent);
-	 				*/
  					String uridata = selectedarticleitem.getLink();
  					String titleText = selectedarticleitem.getTitle();
  					if(uridata == null)
@@ -89,6 +74,20 @@ public class HttpParser2 extends Activity {
  						return;
  					}
  					intent = new Intent(HttpParser2.this, HttpItemActivity.class); 
+ 					intent.putExtra("Link", uridata);
+ 					intent.putExtra("Title", titleText);
+ 					startActivity(intent);
+ 				}
+ 				else if(selectedarticleitem != null && selectedarticleitem.getTitle().contentEquals("사진게시판"))
+ 				{
+ 					String uridata = selectedarticleitem.getLink();
+ 					String titleText = selectedarticleitem.getTitle();
+ 					if(uridata == null)
+ 					{
+ 						Toast.makeText(HttpParser2.this, R.string.data_null, Toast.LENGTH_SHORT).show();
+ 						return;
+ 					}
+ 					intent = new Intent(HttpParser2.this, imageBulletinActivity.class); 
  					intent.putExtra("Link", uridata);
  					intent.putExtra("Title", titleText);
  					startActivity(intent);
@@ -164,17 +163,17 @@ public class HttpParser2 extends Activity {
 
 		source.fullSequentialParse();
 		
-		List<Element> trtags = source.getAllElements(HTMLElementName.UL);
-		for (int i = 0; i < trtags.size(); i++) {
+		List<Element> ultags = source.getAllElements(HTMLElementName.UL);
+		for (int i = 0; i < ultags.size(); i++) {
 
-			Element trElement = (Element) trtags.get(i);
-			List<Element> liList = trElement.getAllElements(HTMLElementName.LI);
-			List<Element> aList = trElement.getAllElements(HTMLElementName.A);
-			List<Element> spanList = trElement.getAllElements(HTMLElementName.SPAN);
+			Element ulElement = (Element) ultags.get(i);
+			List<Element> liList = ulElement.getAllElements(HTMLElementName.LI);
+			List<Element> aList = ulElement.getAllElements(HTMLElementName.A);
+			List<Element> spanList = ulElement.getAllElements(HTMLElementName.SPAN);
 
 			//Log.d(TAG, i + "li : " + liList.size() + " A : " + aList.size()	+ " Span : " + spanList.size());
 
-			if (i == 3 || i == 4) {
+			if (i == 3 || i == 4 || i==6) {
 				for (int x = 0; x < liList.size(); x++) {
 					try {
 						Element e_title = (Element) liList.get(x);
