@@ -110,8 +110,6 @@ public class ContentsActivity extends Activity {
 	String intent_link;
 	String intent_title;
 	
-	private final int DYNAMIC_VIEW_ID = 0x8000;
-	private LinearLayout dynamicLayout;
 	TextView textTitle;
 	TextView textId;
 	TextView textDate;
