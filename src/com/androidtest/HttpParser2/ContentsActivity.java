@@ -186,8 +186,8 @@ public class ContentsActivity extends Activity {
 		mDialog.setMax(100);
 		mDialog.setMessage("Please wait....");
 		mDialog.setIndeterminate(false);
-		//mDialog.onKeyDown(keyCode, event)
-    }
+		mDialog.setCancelable(false);
+	}
 	
 	//by webview & jericho parser
 	private int buildTagList2() throws MalformedURLException,IOException {

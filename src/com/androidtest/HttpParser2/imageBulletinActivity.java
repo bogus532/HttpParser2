@@ -1,8 +1,5 @@
 package com.androidtest.HttpParser2;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,9 +13,11 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class imageBulletinActivity extends Activity {
@@ -30,6 +29,7 @@ public class imageBulletinActivity extends Activity {
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
 	String address_replace_data = "http://clien.career.co.kr/cs2/data";
+	String address_replace_bbs = "http://clien.career.co.kr/cs2/bbs";
 	
 	String headtag ="<html xmlns=\"http://www.w3.org/1999/xhtml\">"+"\n"+
 	"<head>"+"\n"+
@@ -97,6 +97,7 @@ public class imageBulletinActivity extends Activity {
 	String intent_link;
 	String originalLink;
 	String intent_title;
+	int page = 1;
 	
 	WebView webView;
 	
@@ -105,23 +106,31 @@ public class imageBulletinActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.imagebulletinactivity);
         
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
-        webView = (WebView)this.findViewById(R.id.imgbulletinwebview);
-        webView.getSettings().setPluginsEnabled(true);
-        //webView.getSettings().setUseWideViewPort(true);
-        //webView.setInitialScale(1);
-        
         intent = getIntent();
         originalLink = intent.getExtras().getString("Link").toString();
         intent_link = originalLink;
         intent_title = intent.getExtras().getString("Title").toString();
         
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        
+        webView = (WebView)this.findViewById(R.id.imgbulletinwebview);
+        webView.getSettings().setPluginsEnabled(true);
+        
+        Button btnNext = (Button)findViewById(R.id.BtnNext);
+        btnNext.setOnClickListener(new Button.OnClickListener(){
+           public void onClick(View v) {
+        	  // /*
+        	page++;
+			intent_link = originalLink + "&page="+page;
+			Log.d(TAG,"link : "+intent_link);
+			setProgressDlg();
+			new parseHtml().execute();
+			//*/
+        	   //webView.clearView();
+           }
+        });
+        
         setTitle(intent_title);
-        
-        Log.d(TAG,"link : "+intent_link);
-        
-        //webView.loadUrl(intent_link);
         
         setProgressDlg();
 		new parseHtml().execute();
@@ -129,10 +138,9 @@ public class imageBulletinActivity extends Activity {
 	
 	private int buildTagList() throws MalformedURLException,IOException {
 		String content_str = "";
-		String reply_str = "";
-	
+
 		int result=0;
-		
+		Log.d(TAG,"link : "+intent_link);
 		Source source = new Source(new URL(intent_link));
 		
 		source.fullSequentialParse();
@@ -140,30 +148,41 @@ public class imageBulletinActivity extends Activity {
 		//contents
 		List<Element> boardmaintags = source.getAllElementsByClass("board_main");
 		
+		content_str = "";
+		
 		for(int z = 0; z < boardmaintags.size(); z++)
 		{
 			Element boardmainElement = (Element) boardmaintags.get(z);
 			String cStr = boardmainElement.toString();
 			
 			content_str += cStr;
-			
+
 			result = 1;
 		}
 		
 		if(content_str != null)
 		{
-			content_str = content_str.replaceAll("Hit : [0-9]* ,","");
+			content_str = content_str.replaceAll(",  Hit : [0-9]* ,","");
 			content_str = content_str.replaceAll("Vote : [0-9]*","");
 			content_str = content_str.replaceAll("%","%25");
 			content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 			content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
+			content_str = content_str.replaceAll("\\.\\./bbs",address_replace_bbs);
+			content_str = content_str.replaceAll("<!-- 게시판 하단 영역 -->","");
+			content_str = content_str.replaceAll("<!-- 게시판 검색 -->","");
+			content_str = content_str.replaceAll("&gt;","");
+			content_str = content_str.replaceAll("<!--a class='page_text' href='./board.php?bo_table=image&page=[0-9]*'>맨끝 </a-->","");
+			content_str = content_str.replaceAll("<!-- 목록, 글쓰기 버튼-->","");
+			content_str = content_str.replaceAll("<!-- 관리자 버튼 -->","");
+			content_str = content_str.replaceAll("<div class=\"board_foot\">","<!-- <div class=\"board_foot\">");
+			content_str = content_str.replaceAll("<div class=\"list_button\">","<!-- <div class=\"list_button\">");
+			content_str = content_str+" -->";
 		}
 		
 		imageBulletinItem ci  = new imageBulletinItem(content_str);
 		
 		setimageBulletinItem(ci);
-		
-		Log.d(TAG,"result : "+result);
+
 		return result;
 		
 	}
@@ -177,19 +196,29 @@ public class imageBulletinActivity extends Activity {
 	private void setLayout()
 	{
 		String html_str;
+		int webwidth;
+		int webheight;
 
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setVerticalScrollBarEnabled(false);
-		html_str = headtag+imagebulletinitem._Contents+endtag;
+		webView.clearView();
+		webView.loadUrl("about:blank");
+		webView.scrollTo(0, 0);
+		
+		html_str = headtag+imagebulletinitem.getContents()+endtag;
 		try {
 			webView.loadData(html_str, "text/html", "utf-8");
+			webView.scrollTo(0, 0);
+			webwidth = webView.getWidth();
+			webheight = webView.getHeight();
+			Log.d(TAG,"width = "+webwidth+", height = "+webheight);
+			//webView.scrollTo(0, webheight);
 		} catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 		
 		//-------------------------------------------------------------------------------------------------------//
-		///*
+		/*
 		FileOutputStream fileout = null;
 		try {
 			fileout = new FileOutputStream(new File(
@@ -213,6 +242,7 @@ public class imageBulletinActivity extends Activity {
 		mDialog.setMax(100);
 		mDialog.setMessage("Please wait....");
 		mDialog.setIndeterminate(false);
+		mDialog.setCancelable(false);
 		//mDialog.onKeyDown(keyCode, event)
     }
 	
@@ -222,6 +252,7 @@ public class imageBulletinActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
+			//webView.clearFormData();
 			
 			mDialog.show();
 		}

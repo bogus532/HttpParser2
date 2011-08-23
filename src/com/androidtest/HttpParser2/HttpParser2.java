@@ -211,6 +211,7 @@ public class HttpParser2 extends Activity {
 		mDialog.setMessage("Please wait....");
 		//mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 
 		mDialog.setIndeterminate(false);
+		mDialog.setCancelable(false);
     } 
     
     private class parseArticle extends AsyncTask<Void, Integer, Integer> {    	

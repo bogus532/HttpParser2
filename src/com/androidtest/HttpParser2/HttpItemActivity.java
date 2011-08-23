@@ -87,7 +87,7 @@ public class HttpItemActivity extends Activity {
  				int total_index = httpItemListView.getCount();
  				boolean bnextPage = false;
  				
- 				Log.d("setOnItemClickListener","index : "+index+", total : "+total_index);
+ 				//Log.d("setOnItemClickListener","index : "+index+", total : "+total_index);
  				
  				if(index == total_index -1 || index > total_index)
  				{
@@ -221,6 +221,7 @@ public class HttpItemActivity extends Activity {
 		mDialog.setMessage("Please wait....");
 		//mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 
 		mDialog.setIndeterminate(false);
+		mDialog.setCancelable(false);
     }
     
     
@@ -231,6 +232,7 @@ public class HttpItemActivity extends Activity {
 		Date date = null;
 		int result=0;
 		int skip_count = 0;
+		int check_count = 0;
 		int post_notice_color = 0;
 		//Log.d(TAG,"buildTagList");
 		Source source = new Source(new URL(intent_link));
@@ -247,13 +249,15 @@ public class HttpItemActivity extends Activity {
 			List<Element> postnoticeList = trElement.getAllElementsByClass("post_notice");
 
 			//Log.d(TAG, "Tbody SIZE : " + tbodytags.size() + ", TR : " + trList.size());
-			//Log.d(TAG,"post notice index: "+postnoticeList.size());
+			Log.d(TAG,"post notice index: "+postnoticeList.size());
 			if(page > 1)
 			{
 				skip_count = postnoticeList.size();
 				scroll_skip_index = postnoticeList.size();
 			}
-						
+			
+			check_count = postnoticeList.size();
+								
 			for(int x = skip_count; x < trList.size(); x++)
 			{
 				Element tdElement = (Element) trList.get(x);
@@ -345,12 +349,22 @@ public class HttpItemActivity extends Activity {
 					
 					//Log.d(TAG,x+" : "+z + " img string : " + strReturnURL);
 				}
-
+				
+				if(title == "")
+				{
+					//check_count++;
+					Log.d(TAG,"check_count = "+check_count);
+				}
+				
 				if (trList != null) {
-					if(page == 1 && x < postnoticeList.size())
+					if(page == 1 && x < check_count)
 					{
 						post_notice_color = 1;
-						title = "[공지]"+title;
+						if(!title.contains("[공지]"))
+						{
+							title = "[공지]"+title;
+						}
+						Log.d(TAG,x+", post_notice");
 					}
 					else
 					{
@@ -403,7 +417,7 @@ public class HttpItemActivity extends Activity {
 					e.printStackTrace();
 					result =4;
 				}
-				Log.d(TAG,"result : "+result+", count : "+count);
+				//Log.d(TAG,"result : "+result+", count : "+count);
 				count++;
 				if(count>5)
 				{

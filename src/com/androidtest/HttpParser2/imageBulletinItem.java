@@ -2,11 +2,16 @@ package com.androidtest.HttpParser2;
 
 public class imageBulletinItem {
 	
-	String _Contents;
+	String Contents;
 	
 	public imageBulletinItem(String _contents)
 	{
-		_Contents = _contents;
+		Contents = _contents;
+	}
+	
+	public String getContents()
+	{
+		return Contents;
 	}
 
 }
