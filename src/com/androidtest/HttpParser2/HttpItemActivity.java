@@ -270,6 +270,12 @@ public class HttpItemActivity extends Activity {
 					//Log.d(TAG, x+" : "+y + " temp string : " + temp[y]);
 				}
 				
+				if(tdElement.getTextExtractor().toString().contentEquals(""))
+				{
+					check_count++;
+					Log.d(TAG,"check_count = "+check_count);
+				}
+				
 				if(tdList.size() == 5)
 				{
 					title = temp[1];
@@ -348,12 +354,6 @@ public class HttpItemActivity extends Activity {
 					}
 					
 					//Log.d(TAG,x+" : "+z + " img string : " + strReturnURL);
-				}
-				
-				if(title == "")
-				{
-					//check_count++;
-					Log.d(TAG,"check_count = "+check_count);
 				}
 				
 				if (trList != null) {

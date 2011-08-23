@@ -241,7 +241,6 @@ public class imageBulletinActivity extends Activity {
 		mDialog.setMessage("Please wait....");
 		mDialog.setIndeterminate(false);
 		mDialog.setCancelable(false);
-		//mDialog.onKeyDown(keyCode, event)
     }
 	
 	private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	
@@ -250,8 +249,6 @@ public class imageBulletinActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			//webView.clearFormData();
-			
 			mDialog.show();
 		}
 
