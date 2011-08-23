@@ -273,7 +273,7 @@ public class HttpItemActivity extends Activity {
 				if(tdElement.getTextExtractor().toString().contentEquals(""))
 				{
 					check_count++;
-					Log.d(TAG,"check_count = "+check_count);
+					//Log.d(TAG,"check_count = "+check_count);
 				}
 				
 				if(tdList.size() == 5)

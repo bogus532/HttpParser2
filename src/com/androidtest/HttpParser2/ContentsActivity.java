@@ -160,9 +160,9 @@ public class ContentsActivity extends Activity {
         Context context = getApplicationContext();
         display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         
-        Log.d(TAG,"LCD Width : "+display.getWidth()+" , Height : "+display.getHeight());
+        //Log.d(TAG,"LCD Width : "+display.getWidth()+" , Height : "+display.getHeight());
         //lcd_width = display.getWidth();
-        Log.d(TAG,"Link URL : "+intent_link);
+        //Log.d(TAG,"Link URL : "+intent_link);
         
         /*
         // Non Thread
@@ -213,7 +213,7 @@ public class ContentsActivity extends Activity {
 
 			Element h3Element = (Element) h3tags.get(i);
 			h3Str = h3Element.getTextExtractor().toString();
-			Log.d(TAG,i+" - H3 Tag : "+h3Element.getTextExtractor().toString());
+			//Log.d(TAG,i+" - H3 Tag : "+h3Element.getTextExtractor().toString());
 			result += 1;
 		}
 		
@@ -223,7 +223,7 @@ public class ContentsActivity extends Activity {
 
 			Element h4Element = (Element) h4tags.get(i);
 			h4Str = h4Element.getTextExtractor().toString();
-			Log.d(TAG,i+" - H4 Tag : "+h4Element.getTextExtractor().toString());
+			//Log.d(TAG,i+" - H4 Tag : "+h4Element.getTextExtractor().toString());
 			result += 1;
 		}
 		
@@ -292,7 +292,7 @@ public class ContentsActivity extends Activity {
 					i = divtags.size();
 					result +=1;
 				}
-				Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
+				//Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
 			}
 
 		}
@@ -387,7 +387,7 @@ public class ContentsActivity extends Activity {
 
 			Element h3Element = (Element) h3tags.get(i);
 			h3Str = h3Element.getTextExtractor().toString();
-			Log.d(TAG,i+" - H3 Tag : "+h3Element.getTextExtractor().toString());
+			//Log.d(TAG,i+" - H3 Tag : "+h3Element.getTextExtractor().toString());
 			result += 1;
 		}
 		
@@ -397,7 +397,6 @@ public class ContentsActivity extends Activity {
 
 			Element h4Element = (Element) h4tags.get(i);
 			h4Str = h4Element.getTextExtractor().toString();
-			Log.d(TAG,i+" - H4 Tag : "+h4Element.getTextExtractor().toString());
 			result += 1;
 		}
 		
@@ -410,7 +409,7 @@ public class ContentsActivity extends Activity {
 
 			Element contentElement = (Element) contenttags.get(i);
 			String cStr = contentElement.toString();
-			Log.d(TAG,i + " : cStr : "+cStr);
+			//Log.d(TAG,i + " : cStr : "+cStr);
 			
 			List<Element> ptags = contentElement.getAllElements(HTMLElementName.P);
 			List<Element> divtags = contentElement.getAllElements(HTMLElementName.DIV);
@@ -419,8 +418,7 @@ public class ContentsActivity extends Activity {
 			List<Element> attachimgtags = contentElement.getAllElementsByClass("attachedImage");
 			List<Element> viewcontenttags = contentElement.getAllElementsByClass("view_content");
 			
-			Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+attachimgtags.size()
-					+", ahreftags : "+ahreftags.size());
+			//Log.d(TAG,i+": ptags : "+ptags.size()+", divtags : "+divtags.size()+", imgtags : "+attachimgtags.size()+", ahreftags : "+ahreftags.size());
 			
 			
 			if(attachimgtags.size() > 0)
@@ -453,7 +451,7 @@ public class ContentsActivity extends Activity {
 					Element pElement = (Element) ptags.get(x);
 					temp = pElement.getTextExtractor().toString();
 					temp = "<p>"+temp+"</p>";
-					Log.d(TAG,x + " : temp contents : "+temp);
+					//Log.d(TAG,x + " : temp contents : "+temp);
 					content_str += temp;
 					//content_str += "";
 					
@@ -469,11 +467,9 @@ public class ContentsActivity extends Activity {
 					temp = spanElement.toString();
 					temp = temp.replaceAll("&nbsp;", "");
 					content_str += temp;
-					Log.d(TAG,x + " : span contents : "+temp);
+					//Log.d(TAG,x + " : span contents : "+temp);
 				}
 			}
-			//*/
-			
 		}
 
 		//reply
@@ -505,14 +501,9 @@ public class ContentsActivity extends Activity {
 					i = divtags.size();
 					result +=1;
 				}
-				Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
+				//Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
 			}
 
-		}
-		
-		if(author.equals("님"))
-		{
-			//Log.d(TAG,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		}
 		
 		//Date
@@ -563,7 +554,7 @@ public class ContentsActivity extends Activity {
 	        
 	        options.inSampleSize =16;
 	        
-	        Log.d(TAG,"source : "+source);
+	        //Log.d(TAG,"source : "+source);
 	                
 	        try
 	        {
