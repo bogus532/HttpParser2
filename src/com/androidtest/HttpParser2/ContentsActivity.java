@@ -435,7 +435,7 @@ public class ContentsActivity extends Activity {
 
 			Element contentElement = (Element) replytags.get(i);
 			String cStr = contentElement.toString();
-			Log.d(TAG,i + " : reply : "+cStr);
+			//Log.d(TAG,i + " : reply : "+cStr);
 			//content_str += cStr;
 		}
 		

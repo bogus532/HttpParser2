@@ -79,14 +79,11 @@ public class imageBulletinActivity extends Activity {
         Button btnNext = (Button)findViewById(R.id.BtnNext);
         btnNext.setOnClickListener(new Button.OnClickListener(){
            public void onClick(View v) {
-        	  // /*
         	page++;
 			intent_link = originalLink + "&page="+page;
-			Log.d(TAG,"link : "+intent_link);
+			//Log.d(TAG,"link : "+intent_link);
 			setProgressDlg();
 			new parseHtml().execute();
-			//*/
-        	   //webView.clearView();
            }
         });
         
@@ -100,7 +97,7 @@ public class imageBulletinActivity extends Activity {
 		String content_str = "";
 
 		int result=0;
-		Log.d(TAG,"link : "+intent_link);
+		
 		Source source = new Source(new URL(intent_link));
 		
 		source.fullSequentialParse();
