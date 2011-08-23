@@ -14,10 +14,10 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 public class imageBulletinActivity extends Activity {
@@ -100,6 +100,7 @@ public class imageBulletinActivity extends Activity {
 	int page = 1;
 	
 	WebView webView;
+	ScrollView scrView;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,6 +116,8 @@ public class imageBulletinActivity extends Activity {
         
         webView = (WebView)this.findViewById(R.id.imgbulletinwebview);
         webView.getSettings().setPluginsEnabled(true);
+        
+        scrView = (ScrollView)this.findViewById(R.id.item_list);
         
         Button btnNext = (Button)findViewById(R.id.BtnNext);
         btnNext.setOnClickListener(new Button.OnClickListener(){
@@ -196,22 +199,17 @@ public class imageBulletinActivity extends Activity {
 	private void setLayout()
 	{
 		String html_str;
-		int webwidth;
-		int webheight;
 
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.clearView();
 		webView.loadUrl("about:blank");
-		webView.scrollTo(0, 0);
+		scrView.scrollTo(0, 0);
 		
 		html_str = headtag+imagebulletinitem.getContents()+endtag;
 		try {
 			webView.loadData(html_str, "text/html", "utf-8");
-			webView.scrollTo(0, 0);
-			webwidth = webView.getWidth();
-			webheight = webView.getHeight();
-			Log.d(TAG,"width = "+webwidth+", height = "+webheight);
-			//webView.scrollTo(0, webheight);
+			scrView.scrollTo(0, 0);
+			setTitle(intent_title+" : "+page+"Page");
 		} catch(Exception e)
 		{
 			e.printStackTrace();
