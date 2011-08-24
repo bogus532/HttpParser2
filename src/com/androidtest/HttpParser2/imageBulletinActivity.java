@@ -46,6 +46,7 @@ public class imageBulletinActivity extends Activity {
 	
 	WebView webView;
 	ScrollView scrView;
+	Button btnNext;
 	
 	Display display;
 	
@@ -69,19 +70,18 @@ public class imageBulletinActivity extends Activity {
         Context context = getApplicationContext();
         display = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         
-        //Log.d(TAG,"LCD Width : "+display.getWidth()+" , Height : "+display.getHeight());
-        
         tagItem ti  = new tagItem(display.getWidth());
         
         headtag = ti.getIBHeadtag();
+        //headtag = ti.getEmptyHeadtag();
         endtag = ti.getTailtag();
         
-        Button btnNext = (Button)findViewById(R.id.BtnNext);
+        btnNext = (Button)findViewById(R.id.BtnNext);
+        btnNext.setVisibility(View.INVISIBLE);
         btnNext.setOnClickListener(new Button.OnClickListener(){
            public void onClick(View v) {
         	page++;
 			intent_link = originalLink + "&page="+page;
-			//Log.d(TAG,"link : "+intent_link);
 			setProgressDlg();
 			new parseHtml().execute();
            }
@@ -158,7 +158,7 @@ public class imageBulletinActivity extends Activity {
 		webView.clearView();
 		webView.loadUrl("about:blank");
 		scrView.scrollTo(0, 0);
-		
+				
 		html_str = headtag+imagebulletinitem.getContents()+endtag;
 		
 		try {
@@ -187,6 +187,8 @@ public class imageBulletinActivity extends Activity {
 		}
 		//*/
 		//-------------------------------------------------------------------------------------------------------//
+		
+		btnNext.setVisibility(View.VISIBLE);
 	}
 	
 	private void setProgressDlg()
