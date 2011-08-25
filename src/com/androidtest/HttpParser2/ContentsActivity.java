@@ -239,6 +239,7 @@ public class ContentsActivity extends Activity {
 				cStr = cStr.replaceAll("height=\"[0-9]*\"","height=\"150\"");
 				cStr = cStr.replaceAll("width=\"[0-9]*\"","width=\"200\"");
 			}
+			
 			content_str += cStr;
 		}
 		
@@ -257,11 +258,16 @@ public class ContentsActivity extends Activity {
 		content_str = content_str.replaceAll("</dd></dl></div>","</dd></dl></div> -->");
 		//content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
 		//content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
-		
+		//style="background: url("http://ts.daumcdn.net/custom/blog/11/110838/skin/images/imgrightbg.gif") no-repeat scroll right bottom rgb(17, 17, 17); padding-bottom: 17px;"
+		//content_str = content_str.replaceAll("<div class=\"imageblock\" (.*?)*</div>","");
+		content_str = content_str.replaceAll("url(\"*\")","");
+				
+				
 		content_str = content_str.replaceAll("<div class=\"ExifInfo\" style=\"width:[0-9]*px;\">"
 				,"<div class=\"ExifInfo\" style=\"width:280px;\">");
 		content_str = content_str.replaceAll("%","%25");
-		//content_str = content_str.replaceAll("<img","<!-- <img");
+		content_str = content_str.replaceAll("<embed","<!-- <embed");
+		content_str = content_str.replaceAll("</embed>","</embed> -->");
 		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
 		//Log.d("content_str",content_str);
@@ -629,7 +635,7 @@ public class ContentsActivity extends Activity {
 		}
 		
 		//-------------------------------------------------------------------------------------------------------//
-		/*
+		///*
 		FileOutputStream fileout = null;
 		try {
 			fileout = new FileOutputStream(new File(

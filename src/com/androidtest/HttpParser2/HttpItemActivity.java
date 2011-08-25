@@ -450,9 +450,19 @@ public class HttpItemActivity extends Activity {
 				}
 				updateListView();
 			}
-			else if(result > 1)
+			else if(result == 2)
+			{
+				Toast.makeText(HttpItemActivity.this, "네트워크 연결 에러 입니다.\\n 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+    			onBackPressed();
+			}
+			else if(result == 3)
 			{
 				Toast.makeText(HttpItemActivity.this, "Error", Toast.LENGTH_SHORT).show();
+    			onBackPressed();
+			}
+			else if(result == 4)
+			{
+				Toast.makeText(HttpItemActivity.this, "다시 시도해 주세요.", Toast.LENGTH_SHORT).show();
     			onBackPressed();
 			}
 			bUpdate = false;
