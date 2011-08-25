@@ -74,6 +74,7 @@ public class HttpItemActivity extends Activity {
         
         mInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         httpItemListView.addFooterView(mInflater.inflate(R.layout.articlefooter, null));
+        httpItemListView.setVisibility(View.INVISIBLE);
         //httpItemListView.setOnScrollListener(this);
         
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -211,6 +212,7 @@ public class HttpItemActivity extends Activity {
     private void updateListView()
     {
       	//aa.notifyDataSetChanged();
+    	httpItemListView.setVisibility(View.VISIBLE);
     }
     
     private void setProgressDlg()
