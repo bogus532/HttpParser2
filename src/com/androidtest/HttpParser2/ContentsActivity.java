@@ -44,6 +44,7 @@ public class ContentsActivity extends Activity {
 	String address_replace = "http://clien.career.co.kr/cs2/";
 	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
 	String address_replace_data = "http://clien.career.co.kr/cs2/data";
+	String address_replace_bbs = "http://clien.career.co.kr/cs2/bbs";
 	
 	private final ImageDownloader imageDownloader = new ImageDownloader();
 	
@@ -256,25 +257,21 @@ public class ContentsActivity extends Activity {
 		
 		content_str = content_str.replaceAll("<div class=\"signature\"","<!-- <div class=\"signature\"");
 		content_str = content_str.replaceAll("</dd></dl></div>","</dd></dl></div> -->");
-		//content_str = content_str.replaceAll("<div class=\"ccl\"","<!-- <div class=\"ccl\"");
-		//content_str = content_str.replaceAll("<div class=\"signature\"><dl><dt>(.*?)</dd></dl></div>","aaaa");
-		//style="background: url("http://ts.daumcdn.net/custom/blog/11/110838/skin/images/imgrightbg.gif") no-repeat scroll right bottom rgb(17, 17, 17); padding-bottom: 17px;"
-		//content_str = content_str.replaceAll("<div class=\"imageblock\" (.*?)*</div>","");
-		content_str = content_str.replaceAll("url(\"*\")","");
-				
-				
+		//content_str = content_str.replaceAll("<img .*?>","");
+						
 		content_str = content_str.replaceAll("<div class=\"ExifInfo\" style=\"width:[0-9]*px;\">"
 				,"<div class=\"ExifInfo\" style=\"width:280px;\">");
 		content_str = content_str.replaceAll("%","%25");
-		content_str = content_str.replaceAll("<embed","<!-- <embed");
-		content_str = content_str.replaceAll("</embed>","</embed> -->");
+		content_str = content_str.replaceAll("<embed .*?></embed>","");
 		content_str = content_str.replaceAll("\\.\\./skin",address_replace_skin);
 		content_str = content_str.replaceAll("\\.\\./data",address_replace_data);
+		content_str = content_str.replaceAll("\\.\\./bbs",address_replace_bbs);
 		//Log.d("content_str",content_str);
 		
 		reply_str = reply_str.replaceAll("%","%25");
 		reply_str = reply_str.replaceAll("\\.\\./skin",address_replace_skin);
 		reply_str = reply_str.replaceAll("\\.\\./data",address_replace_data);
+		reply_str = reply_str.replaceAll("\\.\\./bbs",address_replace_bbs);
 		reply_str = reply_str.replaceAll("</textarea>(.*?)</div>","</textarea></div>");
 		//Log.d("replytags",reply_str);
 		content_str += reply_str;		

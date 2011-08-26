@@ -227,7 +227,7 @@ public class HttpParser2 extends Activity {
 		protected Integer doInBackground(Void... arg0) {
 
 			int result = 0;
-			Log.d(TAG,"doInBackground");
+			//Log.d(TAG,"doInBackground");
 			while(result == 0)
 			{
 				try {
