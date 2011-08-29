@@ -105,6 +105,107 @@ public class tagItem {
 		".signature dd{padding:7px 0 0 20px;}"+"\n"+
 		"</style>"+"\n";
 	
+	private String logintag = 
+		"<div id=\"account\">"+"\n"+
+		"		<form name=\"fhead\" method=\"post\" onsubmit=\"return fhead_submit(this);\" autocomplete=\"off\" style=\"margin:0px;\">"+"\n"+
+		"		<input type=\"hidden\" name=\"url\" value=\"%2F\">"+"\n"+
+		"          <fieldset>"+"\n"+
+		"          <legend>로그인</legend>"+"\n"+
+		"          <dl>"+"\n"+
+		"            <dt>"+"\n"+
+		"              <label for=\"\">아이디</label>"+"\n"+
+		"            </dt>"+"\n"+
+		"            <dd class=\"user_id\">"+"\n"+
+		"             <input name=\"mb_id\" id=\"mb_id\" type=\"text\" class='user_id_img' size=\"12\" maxlength=\"20\"  value='' onclick=\"loginidcheck()\" >"+"\n"+
+		"            </dd>"+"\n"+
+		"            <dt>"+"\n"+
+		"              <label for=\"\">비밀번호</label>"+"\n"+
+		"            </dt>"+"\n"+
+		"            <dd class=\"user_pass\">"+"\n"+
+		"			<input name=\"mb_password\" id=\"mb_password\" type=\"password\" class='user_id_pass'  size=\"12\" maxlength=\"20\" >"+"\n"+
+		"            </dd>"+"\n"+
+		"          </dl>"+"\n"+
+		"          <ul class=\"login_btn\">"+"\n"+
+		"            <li>"+"\n"+
+		"              <input type=\"checkbox\" class=\"input_check\" name=\"auto_login\" value=\"1\" onclick=\"if (this.checked) { if (confirm('자동로그인을 사용하시면 다음부터 회원아이디와 패스워드를 입력하실 필요가 없습니다.\\n\\n\\공공장소에서는 개인정보가 유출될 수 있으니 사용을 자제하여 주십시오.\\n\\n자동로그인을 사용하시겠습니까?')) { this.checked = true; } else { this.checked = false; } }\">"+"\n"+
+		"              <label for=\"\"><img src=\"http://clien.career.co.kr/cs2/img/account_auto.gi\f\" alt=\"auto\" /></label>"+"\n"+
+		"            </li>"+"\n"+
+		"            <li>"+"\n"+
+		"              <input type=\"image\" src=\"http://clien.career.co.kr/cs2/img/btn_account_login.gif\" class=\"submit\" />"+"\n"+
+		"            </li>"+"\n"+
+		"          </ul>"+"\n"+
+		"          </fieldset>"+"\n"+
+		"          <ul class=\"login_join\">"+"\n"+
+		"            <li class=\"l1\"><a href=\"javascript:win_password_forget();\">ID/PW찾기</a></li>"+"\n"+
+		"            <li><a href=\"http://clien.career.co.kr/cs2/bbs/register.php?url=%2F\">회원가입</a></li>"+"\n"+
+		"          </ul>"+"\n"+
+		"        </div>"+"\n"+
+		"		</form>"+"\n"+
+		""+"\n"+
+		"<script language=\"JavaScript\">"+"\n"+
+		"function loginidcheck(){"+"\n"+
+		""+"\n"+
+		"	$('#mb_id').val('');"+"\n"+
+		""+"\n"+
+		"}"+"\n"+
+
+		"$(document).ready(function(){"+"\n"+
+		""+"\n"+
+		"			$('#mb_id').focus(function(){"+"\n"+
+		""+"\n"+
+		"				$('#mb_id').removeClass('user_id_img');"+"\n"+
+		""+"\n"+
+		"			});"+"\n"+
+		""+"\n"+
+		""+"\n"+
+		""+"\n"+
+		"            $('#mb_password').focus(function(){"+"\n"+
+		""+"\n"+
+		"				$('#mb_password').removeClass('user_id_pass');"+"\n"+
+		""+"\n"+
+		"			});"+"\n"+
+		"});"+"\n"+
+
+		"function fhead_submit(f)"+"\n"+
+		"{"+"\n"+
+		"	if (f.mb_id.value =='아이디'){"+"\n"+
+		""+"\n"+
+		"		  alert(\"회원아이디를 입력하십시오.\");"+"\n"+
+		""+"\n"+
+		"        f.mb_id.focus();"+"\n"+
+		""+"\n"+
+		"        return false;"+"\n"+
+		""+"\n"+
+		"	}"+"\n"+
+
+		"    if (!f.mb_id.value) {"+"\n"+
+		""+"\n"+
+		"        alert(\"회원아이디를 입력하십시오.\");"+"\n"+
+		""+"\n"+
+		"        f.mb_id.focus();"+"\n"+
+		""+"\n"+
+		"        return false;"+"\n"+
+		""+"\n"+
+		"    }"+"\n"+
+		""+"\n"+
+		"	if (!f.mb_password.value) {"+"\n"+
+		""+"\n"+
+		"        alert(\"패스워드를 입력하십시오.\");"+"\n"+
+		""+"\n"+
+		"      //  f.mb_password.focus();"+"\n"+
+		""+"\n"+
+		"        return false;"+"\n"+
+		""+"\n"+
+		"    }"+"\n"+
+		""+"\n"+
+		"    f.action = '../bbs/login_check.php';"+"\n"+
+		""+"\n"+
+		"    return true;"+"\n"+
+		""+"\n"+
+		"}"+"\n"+
+
+		"</script>"+"\n";
+
 	private String empty_headtag =
 		"<html xmlns=\"http://www.w3.org/1999/xhtml\">"+"\n"+
 		"<html><body>"+"\n";
@@ -147,6 +248,10 @@ public class tagItem {
 	
 	public String getTailtag(){
 		return tail_tag;
+	}
+	
+	public String getLogintag(){
+		return logintag;
 	}
 
 }

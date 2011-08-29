@@ -1,10 +1,14 @@
 package com.androidtest.HttpParser2;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.androidtest.HttpParser2.util.NetworkBase;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -132,7 +136,8 @@ public class HttpParser2 extends Activity {
 
 	    switch (item.getItemId()) {
 	        case (MENU_LOGIN): {
-	        	
+	        	Intent i = new Intent(this, loginActivity.class);
+	            startActivityForResult(i, 1);
 	            return true;
 	        }
 	        case (MENU_PREFERENCES) : {
@@ -148,7 +153,7 @@ public class HttpParser2 extends Activity {
 	public void onBackPressed() {
     	super.onBackPressed();
 	}
-     
+    
     private void addArticleItemToArray(ArticleItem _articleitem)
     {
     	ArticleItemArray.add(_articleitem);
@@ -159,7 +164,10 @@ public class HttpParser2 extends Activity {
 		String title = null,link = null;
 		int result = 0;
 		
-		Source source = new Source(new URL(address));
+		String readhtml = NetworkBase.getHtml(address);
+		Source source = new Source(readhtml);
+		
+		//Source source = new Source(new URL(address));
 
 		source.fullSequentialParse();
 		

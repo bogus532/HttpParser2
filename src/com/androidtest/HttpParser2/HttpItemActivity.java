@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import com.androidtest.HttpParser2.util.NetworkBase;
+
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
@@ -89,7 +91,7 @@ public class HttpItemActivity extends Activity {
  				boolean bnextPage = false;
  				
  				//Log.d("setOnItemClickListener","index : "+index+", total : "+total_index);
- 				
+ 				 				
  				if(index == total_index -1 || index > total_index)
  				{
  					selectedhttpitem = null;
@@ -237,7 +239,9 @@ public class HttpItemActivity extends Activity {
 		int check_count = 0;
 		int post_notice_color = 0;
 		//Log.d(TAG,"buildTagList");
-		Source source = new Source(new URL(intent_link));
+		String readhtml = NetworkBase.getHtml(intent_link);
+		Source source = new Source(readhtml);
+		//Source source = new Source(new URL(intent_link));
 		String temp[]= new String[6];
 
 		source.fullSequentialParse();

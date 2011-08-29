@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.androidtest.HttpParser2.util.NetworkBase;
+
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
@@ -42,54 +44,11 @@ import android.widget.Toast;
 public class ContentsActivity extends Activity {
 	private static final String TAG = "ContentsActivity";
 	String address_replace = "http://clien.career.co.kr/cs2/";
-	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
-	String address_replace_data = "http://clien.career.co.kr/cs2/data";
-	String address_replace_bbs = "http://clien.career.co.kr/cs2/bbs";
+	String address_replace_skin = address_replace+"skin";
+	String address_replace_data = address_replace+"data";
+	String address_replace_bbs = address_replace+"bbs";
 	
 	private final ImageDownloader imageDownloader = new ImageDownloader();
-	
-	String viewtag =
-	"<div class=\"view_content\">"+"\n"+
-	"<p class=\"view_content_btn\"> 		  		  		  		  </p>"+"\n"+
-	"<div id=\"resContents\" class=\"resContents\">"+"\n"+
-	"<span id=\"writeContents\" class=\"ct lh\"><p>"+"\n"+
-	"<img     name=\"target_resize_image[]\"  onclick=\"image_window3('http://9to5mac.files.wordpress.com/2011/08/itunes-10-4-1-software-update-dialogue.jpg?w=558&h=654',0,0)\"  style='cursor:pointer;' alt=\"\" src=\"http://9to5mac.files.wordpress.com/2011/08/itunes-10-4-1-software-update-dialogue.jpg?w=558&h=654\" /  ><br />&nbsp;</p>"+"\n"+
-	//"<img     name=\"target_resize_image[]\"  onclick=\"image_window3('http://tctechcrunch2011.files.wordpress.com/2011/08/alphas.jpg?w=640&h=336',0,0)\"  style='cursor:pointer;' alt=\"\" src=\"http://tctechcrunch2011.files.wordpress.com/2011/08/alphas.jpg?w=640&h=336\" /  ></p>"+"\n"+
-	"<p>"+"\n"+
-	"	&nbsp;</p>"+"\n"+
-	"<p>"+"\n"+
-	"	&nbsp;</p>"+"\n"+
-	"<p>"+"\n"+
-	"	애플은 iTunes 10.4.1 업데이트를 배포했다. iTunes 10.4.1 업데이트는 아래와 같은 향상과 수정을 포함한다.</p>"+"\n"+
-	"<p>"+"\n"+
-	"	&nbsp;</p>"+"\n"+
-	"<p>"+"\n"+
-	"	&bull; Fixes a problem where the media keys on some third-party keyboards work inconsistently with iTunes<br />"+"\n"+
-	"	&bull; Addresses issues with adding artwork to songs and videos<br />"+"\n"+
-	"	&bull; Resolves an issue which may cause iTunes to become unresponsive when purchasing an HD movie<br />"+"\n"+
-	"	&bull; Fixes a problem where iTunes may take longer than expected to open after waking your Mac from sleep</p>"+"\n"+
-	"<p>"+"\n"+
-	"	&bull; Addresses issues with VoiceOver support&nbsp;</p>"+"\n"+
-	"<p>"+"\n"+
-	"	&nbsp;</p>"+"\n"+
-	"<p>"+"\n"+
-	"	[소스]&nbsp;<A HREF=\"http://9to5mac.com/2011/08/22/apple-issues-itunes-10-4-1-update-with-resposniveness-fixes/\" TARGET='_blank'>http://9to5mac.com/2011/08/22/apple-issues-itunes-10-4-1-update-with-resposniveness-fixes/</A></p>"+"\n"+
-	"</span>"+"\n"+
-	"<!-- 서명 출력 부분 추가된 소스 100206 -->"+"\n"+
-	"		    <br />"+"\n"+
-	"				<!-- <div class=\"signature\"><dl><dt><img src=\"/cs2/img/signature.gif\" alt=\"signature\" /></dt><dd>블로그: http://wchoi19.tistory.com<br />트위터: wkchoi<br />"+"\n"+
-	"<br />"+"\n"+
-	"Failure to build shared vision is the biggest mistake that gifted leaders make. --- Bill Easum<br />"+"\n"+
-	"<br />"+"\n"+
-	"주의: 이 기사의 무단 전재를 금합니다. 전재를 원하는 분은 제게 쪽지로 문의하시기 바랍니다.</dd></dl></div> -->"+"\n"+
-	"       		<br>"+"\n"+
-	"		<div class=\"ccl\">"+"\n"+
-	"       <a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc-nd/2.0/kr/\" title=\"크리에이티브 커먼즈 코리아 저작자표시-비영리-변경금지 2.0 대한민국 라이센스에 따라 이용하실 수 있습니다.\" target=_blank><img src=\"http://clien.career.co.kr/cs2/skin/board/cheditor/img/ccls_by.gif\">"+"\n"+
-	"      <img src=\"http://clien.career.co.kr/cs2/skin/board/cheditor/img/ccls_nc.gif\">        <img src=\"http://clien.career.co.kr/cs2/skin/board/cheditor/img/ccls_nd.gif\">                </a>"+"\n"+
-	"		</div>"+"\n"+
-	"       			</div>"+"\n"+
-	"	  </div>" ;
-	
 	
 	String headtag = "";
 	
@@ -200,7 +159,9 @@ public class ContentsActivity extends Activity {
 		
 		int result=0;
 		
-		Source source = new Source(new URL(intent_link));
+		String readhtml = NetworkBase.getHtml(intent_link);
+		Source source = new Source(readhtml);
+		//Source source = new Source(new URL(intent_link));
 		
 		source.fullSequentialParse();
 		
@@ -294,6 +255,11 @@ public class ContentsActivity extends Activity {
 					result +=1;
 				}
 				//Log.d(TAG,i+" : "+x+" - Div Tag author : "+author);
+			}
+			
+			if(divElement.toString().contains("account"))
+			{
+				Log.d(TAG, divElement.toString());
 			}
 
 		}
@@ -613,10 +579,9 @@ public class ContentsActivity extends Activity {
 		textId.setText(contentitem._Id);
 		textDate.setText(contentitem._Date);
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setVerticalScrollBarEnabled(false);
+		//webView.setVerticalScrollBarEnabled(false);
 		html_str = headtag+contentitem._Contents+endtag;
-		//html_str = headtag+viewtag+endtag;
-		
+
 		try {
 			if(contentitem._Id_link != null)
 			{
@@ -626,6 +591,7 @@ public class ContentsActivity extends Activity {
 			}
 
 			webView.loadData(html_str, "text/html", "utf-8");
+			//webView.loadUrl("file:///sdcard/itunes.html");
 		} catch(Exception e)
 		{
 			e.printStackTrace();
