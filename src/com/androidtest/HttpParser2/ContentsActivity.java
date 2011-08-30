@@ -259,7 +259,7 @@ public class ContentsActivity extends Activity {
 			
 			if(divElement.toString().contains("account"))
 			{
-				Log.d(TAG, divElement.toString());
+				//Log.d(TAG, divElement.toString());
 			}
 
 		}

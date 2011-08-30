@@ -67,6 +67,12 @@ public class HttpParser2 extends Activity {
 					long arg3) {
 				
  				selectedarticleitem = ArticleItemArray.get(index);
+ 				
+ 				if(!NetworkBase.isLogin() && selectedarticleitem.getTitle().contentEquals("회원중고장터"))
+ 				{
+ 					Toast.makeText(HttpParser2.this, "로그인후 사용하세요.", 1000).show();
+					return;
+ 				}
  
  				if(selectedarticleitem != null && !selectedarticleitem.getTitle().contentEquals("사진게시판"))
  				{
@@ -96,7 +102,7 @@ public class HttpParser2 extends Activity {
  					intent.putExtra("Title", titleText);
  					startActivity(intent);
  				}
-				
+ 				
 			}
         	
         });
@@ -147,6 +153,20 @@ public class HttpParser2 extends Activity {
     
 	    }
 	    return false;
+	}
+    
+    @Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		super.onActivityResult(requestCode, resultCode, data);
+	
+		if(resultCode==RESULT_OK) 
+		{
+			if(requestCode==1) 
+			{
+				Toast.makeText(HttpParser2.this, "로그인 되었습니다.", 1000).show();
+			}
+		}
+		
 	}
     
     @Override

@@ -3,6 +3,7 @@ package com.androidtest.HttpParser2;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Display;
@@ -13,9 +14,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.androidtest.HttpParser2.util.Util;
 import com.androidtest.HttpParser2.util.NetworkBase;
 import com.androidtest.HttpParser2.util.UserInfo;
+import com.androidtest.HttpParser2.util.Util;
 
 public class loginActivity extends Activity {
 	private static final String TAG = "loginActivity";
@@ -47,6 +48,7 @@ public class loginActivity extends Activity {
         	String pass = Util.getSharedData(this, Util.LOGIN_PWD, "");
         	((EditText)findViewById(R.id.login_id_edittext)).setText(id);
         	((EditText)findViewById(R.id.login_passwod_edittext)).setText(pass);
+        	logoutButton.setText("로그아웃");
         } else {
         	String id = Util.getSharedData(this, Util.LOGIN_ID, "");
         	String pass = Util.getSharedData(this, Util.LOGIN_PWD, "");
@@ -83,8 +85,10 @@ public class loginActivity extends Activity {
     	
     	boolean isSuccess = NetworkBase.getLogin(id, pass);
     	if (isSuccess) {
+    		Intent intent = getIntent();
     		loginActivity.loginUser = new UserInfo();
     		loginActivity.loginUser.setId(id);
+    		setResult(RESULT_OK,intent);
     		finish();
     		return;
     	} else {
