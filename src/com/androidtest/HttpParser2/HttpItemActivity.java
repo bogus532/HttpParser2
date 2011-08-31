@@ -101,6 +101,13 @@ public class HttpItemActivity extends Activity {
  				{
  					selectedhttpitem = HttpItemArray.get(index);
  				}
+ 				
+ 				if(selectedhttpitem.getTitle().contains("관리자에 의해 삭제된 글입니다.")
+ 						|| selectedhttpitem.getTitle().contains("다수의 신고에 의해 삭제된 글입니다."))
+ 				{
+ 					Toast.makeText(HttpItemActivity.this, "삭제된 글입니다.", 1000).show();
+ 					return;
+ 				}
   
  				if(selectedhttpitem != null && bnextPage == false)
  				{

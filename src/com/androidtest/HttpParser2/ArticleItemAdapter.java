@@ -2,6 +2,8 @@ package com.androidtest.HttpParser2;
 
 import java.util.ArrayList;
 
+import com.androidtest.HttpParser2.util.Util;
+
 import android.content.Context;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
@@ -38,7 +40,8 @@ public class ArticleItemAdapter extends ArrayAdapter<ArticleItem> {
 	            	tvArticle.setLinksClickable(true);
     				
                     if (tvArticle != null){
-                    	tvArticle.setText(b.getTitle());                            
+                    	tvArticle.setText(b.getTitle());  
+                    	//v.setOnTouchListener(Util.getTouchChangeColor(v));
                     }
             }
             return v;

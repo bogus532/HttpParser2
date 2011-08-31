@@ -4,21 +4,19 @@ import java.io.BufferedInputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.androidtest.HttpParser2.util.Util;
 
 public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
 	private static final String TAG = "HttpItemAdapter";
@@ -47,6 +45,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
                 LayoutInflater vi = (LayoutInflater)context_this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 //v = vi.inflate(R.layout.row, null);
                 v = vi.inflate(R.layout.httpitemadapter, null);
+                //v.setOnTouchListener(Util.getTouchChangeColor(v));
             }
             HttpItem b = items.get(position);
             if (b != null) {
@@ -61,7 +60,7 @@ public class HttpItemAdapter extends ArrayAdapter<HttpItem> {
 	                TextView tvDate = (TextView) v.findViewById(R.id.tvDate2);
 	                TextView tvAuthor = (TextView) v.findViewById(R.id.tvAuthor2);
 	                final ImageView ivGiflink = (ImageView) v.findViewById(R.id.ivDec2);
-                    
+	                
 	                tvContents.setTextSize(18);
                     tvContents.setText(this.getItem(position).toString());
                     //tvContents.setAutoLinkMask(Linkify.WEB_URLS);

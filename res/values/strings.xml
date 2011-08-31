@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="hello">Hello World, HttpParser2!</string>
-    <string name="app_name">HttpParser2</string>
+    <string name="app_name">bogusClien</string>
     <string name="data_null">데이터가 없습니다.</string>
     <string name="mainTitle">Clien.net</string>
 </resources>

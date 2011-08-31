@@ -85,10 +85,8 @@ public class loginActivity extends Activity {
     	
     	boolean isSuccess = NetworkBase.getLogin(id, pass);
     	if (isSuccess) {
-    		Intent intent = getIntent();
     		loginActivity.loginUser = new UserInfo();
     		loginActivity.loginUser.setId(id);
-    		setResult(RESULT_OK,intent);
     		finish();
     		return;
     	} else {
@@ -97,6 +95,9 @@ public class loginActivity extends Activity {
     }
     
     public void finish() {
+    	Intent intent = getIntent();
+    	setResult(RESULT_OK,intent);
+    	
     	CheckBox check = (CheckBox)findViewById(R.id.login_autologin_checkbox);
     	EditText idEditText = (EditText)findViewById(R.id.login_id_edittext);
     	EditText pwEditText = (EditText)findViewById(R.id.login_passwod_edittext);

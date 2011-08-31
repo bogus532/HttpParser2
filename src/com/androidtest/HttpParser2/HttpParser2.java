@@ -163,7 +163,14 @@ public class HttpParser2 extends Activity {
 		{
 			if(requestCode==1) 
 			{
-				Toast.makeText(HttpParser2.this, "로그인 되었습니다.", 1000).show();
+				if(NetworkBase.isLogin())
+				{
+					Toast.makeText(HttpParser2.this, "로그인 되었습니다.", 1000).show();
+				}
+				else
+				{
+					Toast.makeText(HttpParser2.this, "로그아웃 되었습니다.", 1000).show();
+				}
 			}
 		}
 		

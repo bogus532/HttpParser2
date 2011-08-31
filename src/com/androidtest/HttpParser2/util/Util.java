@@ -3,7 +3,11 @@ package com.androidtest.HttpParser2.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 public class Util {
 	public static final String LOGIN_ID = "login_id";
@@ -31,6 +35,22 @@ public class Util {
 		SharedPreferences.Editor e = p.edit();
 		e.putString(_key, _data);
 		e.commit();
+	}
+	
+	public static OnTouchListener getTouchChangeColor(final View layout) {
+		return new OnTouchListener() {
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				if (arg1.getAction() == MotionEvent.ACTION_DOWN) {
+					//layout.setBackgroundColor(Color.parseColor("#AAAAAA"));
+					layout.setBackgroundColor(Color.parseColor("#FF0000"));
+				} else if (arg1.getAction() == MotionEvent.ACTION_UP) {
+					layout.setBackgroundColor(Color.BLACK);
+				} else if (arg1.getAction() == MotionEvent.ACTION_CANCEL) {
+					layout.setBackgroundColor(Color.BLACK);
+				}
+				return false;
+			}
+		};
 	}
 
 }
