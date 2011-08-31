@@ -102,8 +102,9 @@ public class HttpItemActivity extends Activity {
  					selectedhttpitem = HttpItemArray.get(index);
  				}
  				
- 				if(selectedhttpitem.getTitle().contains("관리자에 의해 삭제된 글입니다.")
- 						|| selectedhttpitem.getTitle().contains("다수의 신고에 의해 삭제된 글입니다."))
+ 				if(selectedhttpitem != null && 
+ 						(selectedhttpitem.getTitle().contains("관리자에 의해 삭제된 글입니다.")
+ 						|| selectedhttpitem.getTitle().contains("다수의 신고에 의해 삭제된 글입니다.")))
  				{
  					Toast.makeText(HttpItemActivity.this, "삭제된 글입니다.", 1000).show();
  					return;
@@ -132,7 +133,7 @@ public class HttpItemActivity extends Activity {
  					new parseHtml().execute();
  					Log.d("setOnItemClickListener","page : "+page);
  				}
- 				else
+ 				else 
  				{
  					Toast.makeText(HttpItemActivity.this, R.string.data_null, Toast.LENGTH_SHORT).show();
 					return;
