@@ -34,6 +34,7 @@ import android.os.Environment;
 import android.text.Html;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -76,6 +77,8 @@ public class ContentsActivity extends Activity {
 	
 	Display display;
 	
+	LinearLayout centerline;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +106,9 @@ public class ContentsActivity extends Activity {
         //webView.setInitialScale(1);
         
         imgView = (ImageView)this.findViewById(R.id.imgview);
+        
+        centerline = (LinearLayout)this.findViewById(R.id.contents_center_line);
+        centerline.setVisibility(View.INVISIBLE);
         
         intent = getIntent();
         intent_link = intent.getExtras().getString("Link").toString();
@@ -592,13 +598,14 @@ public class ContentsActivity extends Activity {
 
 			webView.loadData(html_str, "text/html", "utf-8");
 			//webView.loadUrl("file:///sdcard/itunes.html");
+			centerline.setVisibility(View.VISIBLE);
 		} catch(Exception e)
 		{
 			e.printStackTrace();
 		}
 		
 		//-------------------------------------------------------------------------------------------------------//
-		///*
+		/*
 		FileOutputStream fileout = null;
 		try {
 			fileout = new FileOutputStream(new File(
@@ -622,7 +629,7 @@ public class ContentsActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			
+			//centerline.setVisibility(View.INVISIBLE);
 			mDialog.show();
 		}
 
