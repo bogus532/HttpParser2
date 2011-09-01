@@ -629,7 +629,6 @@ public class ContentsActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			//centerline.setVisibility(View.INVISIBLE);
 			mDialog.show();
 		}
 

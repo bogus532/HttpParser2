@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import com.androidtest.HttpParser2.util.NetworkBase;
+
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Source;
 import android.app.Activity;
@@ -30,9 +32,9 @@ public class imageBulletinActivity extends Activity {
 	imageBulletinItem imagebulletinitem;
 	
 	String address_replace = "http://clien.career.co.kr/cs2/";
-	String address_replace_skin = "http://clien.career.co.kr/cs2/skin";
-	String address_replace_data = "http://clien.career.co.kr/cs2/data";
-	String address_replace_bbs = "http://clien.career.co.kr/cs2/bbs";
+	String address_replace_skin = address_replace+"skin";
+	String address_replace_data = address_replace+"data";
+	String address_replace_bbs = address_replace+"bbs";
 	
 	String headtag = "";
 	
@@ -98,7 +100,9 @@ public class imageBulletinActivity extends Activity {
 
 		int result=0;
 		
-		Source source = new Source(new URL(intent_link));
+		String readhtml = NetworkBase.getHtml(intent_link);
+		Source source = new Source(readhtml);
+		//Source source = new Source(new URL(intent_link));
 		
 		source.fullSequentialParse();
 		
@@ -157,13 +161,14 @@ public class imageBulletinActivity extends Activity {
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.clearView();
 		webView.loadUrl("about:blank");
-		scrView.scrollTo(0, 0);
+		//scrView.scrollTo(0, 0);
 				
 		html_str = headtag+imagebulletinitem.getContents()+endtag;
 		
 		try {
 			webView.loadData(html_str, "text/html", "utf-8");
-			scrView.scrollTo(0, 0);
+			//scrView.scrollTo(0, 0);
+			scrView.fullScroll(View.FOCUS_UP);
 			setTitle(intent_title+" : "+page+"Page");
 		} catch(Exception e)
 		{
