@@ -1,14 +1,9 @@
 package com.androidtest.HttpParser2;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.androidtest.HttpParser2.util.NetworkBase;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -27,6 +22,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.androidtest.HttpParser2.util.NetworkBase;
+import com.androidtest.HttpParser2.util.WheelProgressDialog;
 
 public class HttpParser2 extends Activity {
 	
@@ -47,7 +45,8 @@ public class HttpParser2 extends Activity {
 	
 	Intent intent;
 	
-	ProgressDialog mDialog;
+	//ProgressDialog mDialog;
+	WheelProgressDialog wheelprogressDialog;
 	
     /** Called when the activity is first created. */
     @Override
@@ -240,6 +239,7 @@ public class HttpParser2 extends Activity {
     
     private void setProgressDlg()
     {
+    	/*
     	mDialog = new ProgressDialog(this);
 		mDialog.setMax(100);
 		//mDialog.setTitle("Loading...");
@@ -247,6 +247,8 @@ public class HttpParser2 extends Activity {
 		//mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 
 		mDialog.setIndeterminate(false);
 		mDialog.setCancelable(false);
+		*/
+    	wheelprogressDialog = WheelProgressDialog.show(this,"","",true,false,null);
     } 
     
     private class parseArticle extends AsyncTask<Void, Integer, Integer> {    	
@@ -255,7 +257,8 @@ public class HttpParser2 extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			mDialog.show();
+			//mDialog.show();
+			
 		}
 
 		@Override
@@ -300,7 +303,8 @@ public class HttpParser2 extends Activity {
     			Toast.makeText(HttpParser2.this, "Error", Toast.LENGTH_SHORT).show();
     			onBackPressed();
     		}
-			mDialog.dismiss(); 
+			//mDialog.dismiss();
+    		wheelprogressDialog.dismiss();
     	}
   
     	@Override

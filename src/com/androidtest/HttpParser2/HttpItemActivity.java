@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.androidtest.HttpParser2.util.NetworkBase;
+import com.androidtest.HttpParser2.util.WheelProgressDialog;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -40,7 +41,8 @@ public class HttpItemActivity extends Activity {
 	private static final int MENU_UPDATE = Menu.FIRST;
 			
 	ListView httpItemListView;
-	ProgressDialog mDialog;
+	//ProgressDialog mDialog;
+	WheelProgressDialog wheelprogressDialog;
 	
 	HttpItemAdapter aa;
 	ArrayList<HttpItem> HttpItemArray = new ArrayList<HttpItem>();
@@ -129,7 +131,7 @@ public class HttpItemActivity extends Activity {
  					page++;
  					intent_link = originalLink + "&page="+page;
  					scroll_index = total_index;
- 					setProgressDlg();
+ 					//setProgressDlg();
  					new parseHtml().execute();
  					Log.d("setOnItemClickListener","page : "+page);
  				}
@@ -153,7 +155,7 @@ public class HttpItemActivity extends Activity {
 		}
 		//*/
         //Thread
-        setProgressDlg();
+        
 		new parseHtml().execute();
         
         aa = new HttpItemAdapter(this,R.layout.row,HttpItemArray);
@@ -184,7 +186,7 @@ public class HttpItemActivity extends Activity {
 	        	
 	        	page = 1;
 	        	bUpdate = true;
-	        	setProgressDlg();
+	        	//setProgressDlg();
 	    		new parseHtml().execute();
 	    		
 	            return true;
@@ -227,6 +229,7 @@ public class HttpItemActivity extends Activity {
     
     private void setProgressDlg()
     {
+    	/*
     	mDialog = new ProgressDialog(this);
 		mDialog.setMax(100);
 		//mDialog.setTitle("Loading...");
@@ -234,6 +237,8 @@ public class HttpItemActivity extends Activity {
 		//mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 
 		mDialog.setIndeterminate(false);
 		mDialog.setCancelable(false);
+		*/
+    	wheelprogressDialog = WheelProgressDialog.show(this,"","",true,false,null);
     }
     
     
@@ -408,7 +413,8 @@ public class HttpItemActivity extends Activity {
 				intent_link = originalLink;
 				HttpItemArray.clear();
 			}
-			mDialog.show();
+			setProgressDlg();
+			//mDialog.show();
 		}
 
 		@Override
@@ -478,7 +484,8 @@ public class HttpItemActivity extends Activity {
     			onBackPressed();
 			}
 			bUpdate = false;
-			mDialog.dismiss(); 
+			//mDialog.dismiss(); 
+			wheelprogressDialog.dismiss();
     	}
   
     	@Override

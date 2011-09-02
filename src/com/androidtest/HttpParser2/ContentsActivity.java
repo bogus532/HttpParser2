@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.androidtest.HttpParser2.util.NetworkBase;
+import com.androidtest.HttpParser2.util.WheelProgressDialog;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
@@ -62,7 +63,9 @@ public class ContentsActivity extends Activity {
 	
 	ContentsItem contentitem;
 	
-	ProgressDialog mDialog;
+	//ProgressDialog mDialog;
+	WheelProgressDialog wheelprogressDialog;
+	
 	Intent intent;
 	String intent_link;
 	String intent_title;
@@ -139,17 +142,20 @@ public class ContentsActivity extends Activity {
 		}
 		//*/        
       //Thread
-        setProgressDlg();
+        
 		new parseHtml().execute();
 	}
 	
 	private void setProgressDlg()
     {
+		/*
     	mDialog = new ProgressDialog(this);
 		mDialog.setMax(100);
 		mDialog.setMessage("Please wait....");
 		mDialog.setIndeterminate(false);
 		mDialog.setCancelable(false);
+		*/
+		wheelprogressDialog = WheelProgressDialog.show(this,"","",true,false,null);
 	}
 	
 	//by webview & jericho parser
@@ -605,7 +611,7 @@ public class ContentsActivity extends Activity {
 		}
 		
 		//-------------------------------------------------------------------------------------------------------//
-		/*
+		///*
 		FileOutputStream fileout = null;
 		try {
 			fileout = new FileOutputStream(new File(
@@ -629,7 +635,8 @@ public class ContentsActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			mDialog.show();
+			//mDialog.show();
+			setProgressDlg();
 		}
 
 		@Override
@@ -680,7 +687,8 @@ public class ContentsActivity extends Activity {
     			Toast.makeText(ContentsActivity.this, "Error", Toast.LENGTH_SHORT).show();
     			onBackPressed();
     		}
-			mDialog.dismiss(); 
+			//mDialog.dismiss(); 
+    		wheelprogressDialog.dismiss();
 			
     	}
   

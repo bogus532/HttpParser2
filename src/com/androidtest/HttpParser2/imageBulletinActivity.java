@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.List;
 
 import com.androidtest.HttpParser2.util.NetworkBase;
+import com.androidtest.HttpParser2.util.WheelProgressDialog;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.Source;
@@ -28,7 +29,9 @@ import android.widget.Toast;
 public class imageBulletinActivity extends Activity {
 	private static final String TAG = "imageBulletinActivity";
 	
-	ProgressDialog mDialog;
+	//ProgressDialog mDialog;
+	WheelProgressDialog wheelprogressDialog;
+	
 	imageBulletinItem imagebulletinitem;
 	
 	String address_replace = "http://clien.career.co.kr/cs2/";
@@ -84,15 +87,14 @@ public class imageBulletinActivity extends Activity {
            public void onClick(View v) {
         	page++;
 			intent_link = originalLink + "&page="+page;
-			setProgressDlg();
+			//setProgressDlg();
 			new parseHtml().execute();
            }
         });
         
         setTitle(intent_title);
         
-        setProgressDlg();
-		new parseHtml().execute();
+        new parseHtml().execute();
 	}
 	
 	private int buildTagList() throws MalformedURLException,IOException {
@@ -198,11 +200,14 @@ public class imageBulletinActivity extends Activity {
 	
 	private void setProgressDlg()
     {
+		/*
     	mDialog = new ProgressDialog(this);
 		mDialog.setMax(100);
 		mDialog.setMessage("Please wait....");
 		mDialog.setIndeterminate(false);
 		mDialog.setCancelable(false);
+		*/
+		wheelprogressDialog = WheelProgressDialog.show(this,"","",true,false,null);
     }
 	
 	private class parseHtml extends AsyncTask<Void, Integer, Integer> {    	
@@ -211,7 +216,8 @@ public class imageBulletinActivity extends Activity {
 		protected void onPreExecute() {
 				
 			super.onPreExecute();
-			mDialog.show();
+			//mDialog.show();
+			setProgressDlg();
 		}
 
 		@Override
@@ -261,7 +267,8 @@ public class imageBulletinActivity extends Activity {
     			Toast.makeText(imageBulletinActivity.this, "Error", Toast.LENGTH_SHORT).show();
     			onBackPressed();
     		}
-			mDialog.dismiss(); 
+			//mDialog.dismiss();
+    		wheelprogressDialog.dismiss();
 			
     	}
   

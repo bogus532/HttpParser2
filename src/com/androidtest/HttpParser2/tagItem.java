@@ -227,6 +227,7 @@ public class tagItem {
 		".commentContents  img { max-width:"+lcd_width+"; width: expression(this.width > "+lcd_width+" ? "+lcd_width+": true); }"+"\n"+
 		ib_head_tag2;
 		
+		
 		Content_headtag = content_headtag1+
 		".resContents      img { max-width:"+lcd_width+"; width: expression(this.width > "+lcd_width+" ? "+lcd_width+": true); }"+"\n"+
 		".commentContents  img { max-width:"+lcd_width+"; width: expression(this.width > "+lcd_width+" ? "+lcd_width+": true); }"+"\n"+
